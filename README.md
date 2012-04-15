@@ -1,14 +1,18 @@
 # Tamarillo
 
-A command line pomodoro/tomato timer. 
+A command line pomodoro/tomato timer.
 
-Runs a daemon for observing the current tomato. Includes a skinny API
-for populating your command prompt and attaching various notifications
-to the end of a tomato. Also provides storage of past tomatoes for
-analysis, etc.
+Currently this will just keep track of whether you are in the middle of
+a tomato or not. If you are it will display how much time remains. If
+you complete to the tomato without being interrupted, it will log it as
+completed for the day. If you interrupt the tomato it will prompt you to
+start a new one.
 
-Your tomatoes are stored in a flat file in the user directory
-`~/.tamarillo`. 
+Also provides a skinny API for putting tomato status into your shell
+prompt, including status and time remaining, and number of tomatoes
+completed for the day. 
+
+Your tomatoes are stored in the `.tamarillo` user directory.
 
 
 ## Why Tamarillo?
@@ -19,6 +23,7 @@ first introduced to europe, they were not popular because people
 associated them with the deadly poisons of their cousins.
 
 In any case, tamarillos are delicious if you can find them.
+
 
 ## Examples
 
@@ -60,6 +65,7 @@ In any case, tamarillos are delicious if you can find them.
 
 ## Future ideas
 
-* instaweb display of tomatoes with analysis
+* task management, tomatoes per task
+* instaweb view of history
 * notification helper app for various environments
 * daemon process for monitoring the current tomato
