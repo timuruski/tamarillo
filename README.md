@@ -18,11 +18,14 @@ Your tomatoes are stored in the `.tamarillo` user directory.
 ## Why Tamarillo?
 
 The tamarillo is a cousin to the tomato, which is also related to
-eggplants and potatoes and the deadly nightshade. When tomatoes were
-first introduced to europe, they were not popular because people
+eggplants,  potatoes and the deadly nightshade. When tomatoes were
+first introduced to Europe, they were not popular because people
 associated them with the deadly poisons of their cousins.
 
-In any case, tamarillos are delicious if you can find them.
+Also I wasn't clever enough to come up with Tomatillo at the time. In
+any case, tamarillos are delicious if you can find them. I recommend
+stewing them and then serving over vanilla ice cream; home made if you
+can.
 
 
 ## Examples
