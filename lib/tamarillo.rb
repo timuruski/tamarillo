@@ -1,9 +1,5 @@
-require "tamarillo/version"
+require 'tamarillo/version'
+require 'tamarillo/pomodoro'
 
 module Tamarillo
-  class CLI
-    def self.start
-      puts "No tomatoes in progress."
-    end
-  end
 end
