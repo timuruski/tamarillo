@@ -5,71 +5,112 @@ require_relative '../../../lib/tamarillo/pomodoro'
 include Tamarillo
 
 describe Tamarillo::Pomodoro do
-  before :all do
-    Timecop.freeze
+  let(:now) { Time.new(2012, 4, 15, 6, 0, 0) }
+  let(:today) { Date.new(2012, 4, 15) }
+
+  before do
+    @subject = Pomodoro.new(25.minutes, now)
   end
 
-  after :all do
-    Timecop.return
+  after do
+    # FIXME This doesn't appear to affect subsequent tests.
+    # Timecop.return
   end
 
-  subject { Pomodoro.new(25.minutes) }
+  subject { @subject }
 
   describe "basic attibutes" do
     its(:duration) { should == 25.minutes }
-    its(:started_at) { should == Time.now }
-    its(:date) { should == Date.today }
-    its(:state) { should == Pomodoro::States::ACTIVE }
+    its(:started_at) { should == now }
+    its(:date) { should == today }
   end
 
   describe "remaining time" do
-    let!(:pomodoro) { Pomodoro.new(25.minutes) }
+    # let!(:pomodoro) { Pomodoro.new(25.minutes) }
 
-    it "works if no time has elapsed" do
-      pomodoro.remaining.should == 25.minutes
+    context "when no time has elapsed" do
+      before do
+        Timecop.freeze(now)
+      end
+
+      its(:remaining) { should == 25.minutes }
     end
 
-    it "works if time has elapsed" do
-      Timecop.travel(10.minutes)
-      pomodoro.remaining.should == 15.minutes
+    context "if some time has elapsed" do
+      before do
+        Timecop.freeze(now + 10.minutes)
+      end
+
+      its(:remaining) { should == 15.minutes }
     end
 
-    it "works if all time has elapsed" do
-      Timecop.travel(25.minutes)
-      pomodoro.remaining.should == 0
+    context "when all time has elapsed" do
+      before do
+        Timecop.freeze(now + 25.minutes)
+      end
+
+      its(:remaining) { should == 0 }
     end
 
-    it "works if more time has elapsed" do
-      Timecop.travel(30.minutes)
-      pomodoro.remaining.should == 0
+    context "when excessive time has elapsed" do
+      before do
+        Timecop.freeze(now + 30.minutes)
+      end
+
+      its(:remaining) { should == 0 }
+    end
+
+    context "when it has been interrupted" do
+      before do
+        subject.interrupt!
+      end
+
+      its(:remaining) { should == 0 }
     end
   end
 
   describe "states" do
-    it "is active when time remains" do
-      pomodoro = Pomodoro.new(25.minutes)
-      Timecop.travel(10.minutes)
-      pomodoro.state.should == Pomodoro::States::ACTIVE
+    context "when just started" do
+      before do
+        Timecop.freeze(now)
+      end
+
+      it { should be_active }
+      it { should_not be_completed }
+      it { should_not be_interrupted }
     end
 
-    it "is completed when time has elapsed" do
-      pomodoro = Pomodoro.new(25.minutes)
-      Timecop.travel(25.minutes)
-      pomodoro.state.should == Pomodoro::States::COMPLETED
+    context "when time remains" do
+      before do
+        Timecop.freeze(now + 15.minutes)
+      end
+
+      it { should be_active }
+      it { should_not be_completed }
+      it { should_not be_interrupted }
     end
 
-    it "is interrupted when interrupted" do
-      pomodoro = Pomodoro.new(25.minutes)
-      pomodoro.interrupt!
-      pomodoro.state.should == Pomodoro::States::INTERRUPTED
+    context "when time has elapsed" do
+      before do
+        Timecop.freeze(now + 25.minutes)
+      end
+
+      it { should_not be_active }
+      it { should be_completed }
+      it { should_not be_interrupted }
+    end
+
+    context "when it has been interrupted" do
+      before do
+        subject.interrupt!
+      end
+
+      it { should be_interrupted }
+      it { should_not be_completed }
     end
 
   end
 
-  # it "is active when the remaining time is > 0"
-  # it "can be completed"
-  # it "can be on-break"
-  # it "can be distracted"
-  # it "can be interrupted"
+  # it "can be distracted" ??
   
 end

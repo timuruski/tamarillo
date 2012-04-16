@@ -17,6 +17,8 @@ module Tamarillo
     end
 
     def remaining
+      return 0 if @interrupted
+      
       d = (@started_at.to_i + @duration) - Time.now.to_i
       d > 0 ? d : 0
     end
@@ -24,6 +26,20 @@ module Tamarillo
     def interrupt!
       @interrupted = true
     end
+
+    def active?
+      States::ACTIVE == state
+    end
+
+    def completed?
+      States::COMPLETED == state
+    end
+
+    def interrupted?
+      States::INTERRUPTED == state
+    end
+
+    protected
 
     def state
       if @interrupted
