@@ -27,19 +27,25 @@ In any case, tamarillos are delicious if you can find them.
 
 ## Examples
 
+These examples are just thought experiments, this interface has not yet
+been implemented.
+
 ### Configuration
 
-  $ tam config duration 25m
-  > tamarillo duration is 25 minutes
+```
+$ tam config duration 25m
+> tamarillo duration is 25 minutes
 
-  $ tam config alert growl
-  > tamarillo will use Growl for notifications
+$ tam config alert growl
+> tamarillo will use Growl for notifications
 
-  $ tam config daemon ~/.tamarillo/pid
-  > tamarillo will monitor the current tomato from here
+$ tam config daemon ~/.tamarillo/pid
+> tamarillo will monitor the current tomato from here
+```
 
 ### Starting a tomato
 
+```
   $ tam
   > no tomatoes in progress
   > no tomatoes recorded
@@ -52,15 +58,18 @@ In any case, tamarillos are delicious if you can find them.
 
   $ tam interrupt
   > tomato interrupted
+```
 
 ### Status of current tomato
 
+```
   $ tam
   > tamarillo in progress
   > 24 minutes remaining
 
   $ tam status --prompt
   > active 24
+```
 
 
 ## Future ideas
