@@ -16,6 +16,26 @@ describe Tomato do
     its(:date) { should == today }
   end
 
+  describe "comparison" do
+    it "is the same if the start-times match" do
+      clock = stub(:start_time => Time.new)
+      tomato_a = Tomato.new(25.minutes, clock)
+      tomato_b = Tomato.new(25.minutes, clock)
+
+      tomato_a.should eql(tomato_b)
+    end
+
+    # FIXME This ensures two tomatoes from the same
+    # time cannot co-exist, but it seems confusing
+    it "is the same if the duration differs" do
+      clock = stub(:start_time => Time.new)
+      tomato_a = Tomato.new(10.minutes, clock)
+      tomato_b = Tomato.new(20.minutes, clock)
+
+      tomato_a.should eql(tomato_b)
+    end
+  end
+
   describe "remaining time" do
     let(:clock) { stub(:elapsed => elapsed) }
     let(:elapsed) { 0 }

@@ -23,6 +23,11 @@ module Tamarillo
       @clock.start_date
     end
 
+    def eql?(other)
+      other.started_at == started_at || 
+      super(other)
+    end
+
     def remaining
       return 0 if @interrupted
       
