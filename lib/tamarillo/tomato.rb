@@ -8,7 +8,7 @@ module Tamarillo
       INTERRUPTED = :interrupted.freeze
     end
 
-    attr_reader :duration, :started_at, :date
+    attr_reader :duration
 
     def initialize(duration, clock)
       @duration = duration
