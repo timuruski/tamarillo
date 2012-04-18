@@ -1,15 +1,15 @@
 require 'active_support/core_ext/numeric/time'
 require 'timecop'
+require_relative '../../../lib/tamarillo/tomato'
 
-require_relative '../../../lib/tamarillo/pomodoro'
 include Tamarillo
 
-describe Tamarillo::Pomodoro do
+describe Tamarillo::Tomato do
   let(:now) { Time.new(2012, 4, 15, 6, 0, 0) }
   let(:today) { Date.new(2012, 4, 15) }
 
   before do
-    @subject = Pomodoro.new(25.minutes, now)
+    @subject = Tomato.new(25.minutes, now)
   end
 
   after do
@@ -26,8 +26,6 @@ describe Tamarillo::Pomodoro do
   end
 
   describe "remaining time" do
-    # let!(:pomodoro) { Pomodoro.new(25.minutes) }
-
     context "when no time has elapsed" do
       before do
         Timecop.freeze(now)

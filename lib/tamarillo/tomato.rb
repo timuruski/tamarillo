@@ -1,7 +1,7 @@
 require 'date'
 
 module Tamarillo
-  class Pomodoro
+  class Tomato
     module States
       ACTIVE = :active.freeze
       COMPLETED = :completed.freeze
