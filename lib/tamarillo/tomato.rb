@@ -10,16 +10,23 @@ module Tamarillo
 
     attr_reader :duration, :started_at, :date
 
-    def initialize(duration, started_at = nil)
+    def initialize(duration, clock)
       @duration = duration
-      @started_at = started_at || Time.now
-      @date = @started_at.to_date
+      @clock = clock
+    end
+
+    def started_at
+      @clock.start_time
+    end
+
+    def date
+      @clock.start_date
     end
 
     def remaining
       return 0 if @interrupted
       
-      d = (@started_at.to_i + @duration) - Time.now.to_i
+      d = @duration - @clock.elapsed
       d > 0 ? d : 0
     end
 
