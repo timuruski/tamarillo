@@ -1,5 +1,6 @@
 require 'tamarillo/version'
-require 'tamarillo/pomodoro'
+require 'tamarillo/tomato'
+require 'tamarillo/tomato_basket'
 
 module Tamarillo
 end
