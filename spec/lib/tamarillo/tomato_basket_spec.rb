@@ -16,8 +16,17 @@ describe TomatoBasket do
     end
   end
 
-  it "can write tomatoes to the filesystem"
-  it "can read tomatoes from the filesystem"
+  it "can write tomatoes to the filesystem" do
+    FakeFS do
+      now = Time.now
+      tomato = stub(:started_at => now)
+      tomato_path = Pathname.new(tamarillo_dir).join('tomato')
+
+      expect { subject.save(tomato) }.
+        to change { File.exist?(tomato_path) }
+    end
+  end
+
   it "can count how many tomatoes are stored"
   # something can group them by day and maybe task
 end
