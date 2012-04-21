@@ -1,3 +1,5 @@
+require 'tamarillo/clock'
+require 'tamarillo/tomato'
 require 'tamarillo/tomato_file'
 require 'fileutils'
 require 'pathname'
@@ -16,6 +18,11 @@ module Tamarillo
       tomato_file = TomatoFile.new(tomato)
       tomato_path = @pathname.join(tomato_file.name)
       File.open(tomato_path, 'w') { |f| f << tomato_file.content }
+    end
+
+    def read(path)
+      clock = Clock.new(Time.now)
+      Tomato.new(25 * 60, clock)
     end
 
   end
