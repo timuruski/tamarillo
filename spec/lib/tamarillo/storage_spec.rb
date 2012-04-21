@@ -1,16 +1,16 @@
-require_relative '../../../lib/tamarillo/tomato_basket'
+require_relative '../../../lib/tamarillo/storage'
 require 'fakefs/spec_helpers'
 
 include Tamarillo
 
-describe TomatoBasket do
+describe Storage do
   include FakeFS::SpecHelpers
   let(:storage_path) { '~/.tamarillo' }
-  subject { TomatoBasket.new(storage_path) }
+  subject { Storage.new(storage_path) }
 
   it "creates the storage directory if it is missing" do
     FakeFS do
-      expect { TomatoBasket.new(storage_path) }.
+      expect { Storage.new(storage_path) }.
         to change { File.directory?(storage_path) }
     end
   end
@@ -22,7 +22,7 @@ describe TomatoBasket do
         tomato = stub(:started_at => now, :state => :active)
         tomato_path = Pathname.new(storage_path).join('20110101060000')
 
-        expect { subject.save(tomato) }.
+        expect { subject.write(tomato) }.
           to change { File.exist?(tomato_path) }
       end
     end
@@ -35,7 +35,7 @@ describe TomatoBasket do
         now = Time.new(2011,1,1,6,0,0)
         today = Date.new(2011,1,1)
         tomato = stub(:started_at => now, :date => today, :state => :active)
-        TomatoBasket.new(storage_path).save(tomato)
+        Storage.new(storage_path).write(tomato)
       end
 
       subject { File.readlines(tomato_path.to_s) }
@@ -51,7 +51,7 @@ describe TomatoBasket do
     FakeFS do
       # insert sample file
       tomato_path = Pathname.new(tamarillo_dir).join('tomato')
-      TomatoBasket.load(tomato_path) # should return a tomato
+      Storage.load(tomato_path) # should return a tomato
     end
   end
 

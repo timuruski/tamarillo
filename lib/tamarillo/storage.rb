@@ -3,7 +3,7 @@ require 'fileutils'
 require 'pathname'
 
 module Tamarillo
-  class TomatoBasket
+  class Storage
     attr_reader :path
 
     def initialize(path)
@@ -12,7 +12,7 @@ module Tamarillo
       FileUtils.mkdir_p(@pathname)
     end
 
-    def save(tomato)
+    def write(tomato)
       tomato_file = TomatoFile.new(tomato)
       tomato_path = @pathname.join(tomato_file.name)
       File.open(tomato_path, 'w') { |f| f << tomato_file.content }
