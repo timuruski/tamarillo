@@ -18,9 +18,9 @@ describe TomatoBasket do
   describe "writing tomatoes to the filesystem" do
     it "writes files" do
       FakeFS do
-        now = Time.now
+        now = Time.new(2011,1,1,6,0,0)
         tomato = stub(:started_at => now, :state => :active)
-        tomato_path = Pathname.new(storage_path).join('tomato')
+        tomato_path = Pathname.new(storage_path).join('20110101060000')
 
         expect { subject.save(tomato) }.
           to change { File.exist?(tomato_path) }
@@ -29,7 +29,7 @@ describe TomatoBasket do
 
     describe "tomato file" do
       let(:storage_path) { Pathname.new('/tmp/tamarillo') }
-      let(:tomato_path) { storage_path.join('tomato') }
+      let(:tomato_path) { storage_path.join('20110101060000') }
 
       before do
         now = Time.new(2011,1,1,6,0,0)

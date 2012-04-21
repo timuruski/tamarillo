@@ -8,16 +8,22 @@ module Tamarillo
     def name
       @tomato.started_at.strftime(FILENAME_FORMAT)
     end
+    
+    def content
+      [time,task,state].join("\n")
+    end
 
-    def time_line
+    private
+
+    def time
       @tomato.started_at.to_s
     end
 
-    def task_line
-      'Some task I\'m working on'
+    def task
+      "Some task I'm working on"
     end
 
-    def state_line
+    def state
       @tomato.state.to_s
     end
   end
