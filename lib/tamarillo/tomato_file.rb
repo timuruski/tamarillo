@@ -1,14 +1,17 @@
+require 'time'
+
 module Tamarillo
   class TomatoFile
     FILENAME_FORMAT = '%Y%m%d%H%M%S'
+
     def initialize(tomato)
       @tomato = tomato
     end
-    
+
     def name
       @tomato.started_at.strftime(FILENAME_FORMAT)
     end
-    
+
     def content
       [time,task,state].join("\n")
     end
@@ -16,7 +19,7 @@ module Tamarillo
     private
 
     def time
-      @tomato.started_at.to_s
+      @tomato.started_at.iso8601
     end
 
     def task

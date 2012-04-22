@@ -10,7 +10,7 @@ describe Tamarillo::TomatoFile do
 
   its(:name) { should == '20110101060000' }
   its(:content) { should == <<-EOS.chomp }
-2011-01-01 06:00:00 -0700
+2011-01-01T06:00:00-07:00
 Some task I'm working on
 active
 EOS

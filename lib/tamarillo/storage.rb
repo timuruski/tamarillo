@@ -21,7 +21,11 @@ module Tamarillo
     end
 
     def read(path)
-      clock = Clock.new(Time.now)
+      data = File.readlines(path)
+      start_time = Time.iso8601(data[0])
+
+      
+      clock = Clock.new(start_time)
       Tomato.new(25 * 60, clock)
     end
 

@@ -18,7 +18,7 @@ describe Storage do
   let(:storage_path) { Pathname.new('~/.tamarillo') }
   let(:tomato_path) { storage_path.join('20110101060000') }
   let(:sample_tomato) { <<EOS }
-2011-01-01 06:00:00 -0700
+2011-01-01T06:00:00-07:00
 Some task I'm working on
 completed
 EOS
@@ -49,20 +49,33 @@ EOS
 
       subject { FakeFS { File.readlines(tomato_path.to_s) } }
 
-      specify { subject[0].should == "2011-01-01 06:00:00 -0700" }
+      specify { subject[0].should == "2011-01-01T06:00:00-07:00" }
       specify { subject[1].should == "Some task I'm working on" }
       specify { subject[2].should == 'active' }
     end
   end
 
-  it "can read tomatoes from the filesystem" do
-    FileUtils.mkdir_p(storage_path)
-    File.open(tomato_path.to_s, 'w') { |f| f << sample_tomato }
+  describe "reading tomatoes from the filesystem" do
+    before do
+      FileUtils.mkdir_p(storage_path)
+      File.open(tomato_path.to_s, 'w') { |f| f << sample_tomato }
+    end
 
-    tomato = subject.read(tomato_path) # should return a tomato
-    tomato.should be
+    it "can read tomatoes from the filesystem" do
+      tomato = subject.read(tomato_path) # should return a tomato
+      tomato.should be
+    end
+
+    describe "the tomato" do
+      let(:storage) { Storage.new(storage_path) }
+      subject { storage.read(tomato_path) }
+
+      its(:started_at) { should == now }
+      its(:date) { should == today }
+      it { should be_completed }
+    end
+        
   end
-
 
   # Storage layout looks like this
   # |,tamarillo
