@@ -3,16 +3,13 @@
 A command line pomodoro/tomato timer.
 
 Currently this will just keep track of whether you are in the middle of
-a tomato or not. If you are it will display how much time remains. If
-you complete to the tomato without being interrupted, it will log it as
-completed for the day. If you interrupt the tomato it will prompt you to
-start a new one.
+a tomato. If you are it will display how much time remains. If you
+complete to the tomato without being interrupted, it will log it as
+completed for the day. You can also interrupt a tomato, which will
+freeze it for later analysis.
 
-Also provides a skinny API for putting tomato status into your shell
-prompt, including status and time remaining, and number of tomatoes
-completed for the day. 
-
-Your tomatoes are stored in the `.tamarillo` user directory.
+It also makes it easy to includes the  current tomato status in your
+prompt. Tomatoes are stored in `~/.tamarillo` by default.
 
 
 ## Why Tamarillo?
@@ -30,54 +27,55 @@ can.
 
 ## Examples
 
-These examples are just thought experiments, this interface has not yet
-been implemented.
+These examples are just thought experiments, this interface has not been
+implemented yet.
 
-### Configuration
-
-```
-$ tam config duration 25m
-> tamarillo duration is 25 minutes
-
-$ tam config alert growl
-> tamarillo will use Growl for notifications
-
-$ tam config daemon ~/.tamarillo/pid
-> tamarillo will monitor the current tomato from here
-```
-
-### Starting a tomato
+### Starting and stopping a tomato
 
 ```
-  $ tam
-  > no tomatoes in progress
-  > no tomatoes recorded
-
   $ tam start
   > tamarillo started
 
   $ tam stop
-  > tomato stopped
+  > tomato stopped around ~17m
+
+  $ tam pause
+  > tomato paused around ~16m
 
   $ tam interrupt
-  > tomato interrupted
+  > tomato interrupted around ~14m
 ```
 
 ### Status of current tomato
 
 ```
-  $ tam
-  > tamarillo in progress
-  > 24 minutes remaining
+  $ tam status
+  > ~19m # rough time only, don't sweat the seconds
 
-  $ tam status --prompt
-  > active 24
+  $ tam
+  > ~19m
+
+  $ tam status --full
+  > active 19:21
+```
+
+### Configuration
+
+```
+$ tam config --duration=25
+> tamarillo duration is 25 minutes
+
+$ tam config --alert=growl
+> tamarillo will use Growl for notifications
+
+$ tam config --daemon ~/.tamarillo/pid
+> tamarillo will monitor the current tomato from here
 ```
 
 
 ## Future ideas
 
-* task management, tomatoes per task
-* instaweb view of history
-* notification helper app for various environments
+* task management, tomatoes are assigned to a task
 * daemon process for monitoring the current tomato
+* notification helper app for various environments
+* instaweb view of history
