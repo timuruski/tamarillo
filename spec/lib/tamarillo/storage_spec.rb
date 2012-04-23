@@ -1,7 +1,17 @@
 require_relative '../../../lib/tamarillo/storage'
 require 'fakefs/spec_helpers'
+require 'active_support/core_ext/numeric/time'
 
 include Tamarillo
+
+# Storage layout looks like this
+# |,tamarillo
+#   |-config
+#   |-basket.sqlite
+#   |-basket
+#     |-2012
+#       |-0401
+#         |-060101
 
 describe Storage do
   # include FakeFS::SpecHelpers
@@ -15,13 +25,25 @@ describe Storage do
 
   let(:now) { Time.new(2011,1,1,6,0,0) }
   let(:today) { Date.new(2011,1,1) }
-  let(:storage_path) { Pathname.new('~/.tamarillo') }
+  let(:storage_path) { Pathname.new('tmp/tamarillo') }
   let(:tomato_path) { storage_path.join('20110101060000') }
   let(:sample_tomato) { <<EOS }
 2011-01-01T06:00:00-07:00
 Some task I'm working on
 completed
 EOS
+
+  def create_tomato_file(time)
+    folder_path = storage_path.join(time.strftime('%Y/%m%d'))
+    tomato_path = folder_path.join(time.strftime('%Y%m%d%H%M%S'))
+
+    FileUtils.mkdir_p(folder_path)
+    File.open(tomato_path, 'w') { |f| f << <<EOS }
+#{time.iso8601}
+Some task I'm working on
+completed
+EOS
+  end
 
 
   subject { Storage.new(storage_path) }
@@ -57,8 +79,7 @@ EOS
 
   describe "reading tomatoes from the filesystem" do
     before do
-      FileUtils.mkdir_p(storage_path)
-      File.open(tomato_path.to_s, 'w') { |f| f << sample_tomato }
+      create_tomato_file(now)
     end
 
     it "can read tomatoes from the filesystem" do
@@ -74,18 +95,26 @@ EOS
       its(:date) { should == today }
       it { should be_completed }
     end
-        
   end
 
-  # Storage layout looks like this
-  # |,tamarillo
-  #   |-config
-  #   |-basket.sqlite
-  #   |-basket
-  #     |-2012
-  #       |-0401
-  #         |-060101
-  #
+  describe "finding most recent tomato" do
+    context "when there are many tomatoes" do
+      before do
+        create_tomato_file(Date.today.to_time + 6.hours)
+        create_tomato_file(Date.today.to_time + 6.hours + 15.minutes)
+      end
+
+      subject { Storage.new(storage_path).latest }
+      # its(:started_at) { should == Date.today.to_time + 6.hours + 15.minutes }
+    end
+
+    context "when there are no tomatoes for the day" do
+      before do
+        create_tomato_file(Date.today.to_time - 2.days)
+      end
+      it "returns nil"
+    end
+  end
 
   # it "can count how many tomatoes are stored"
   # it "can find tomatoes by week"

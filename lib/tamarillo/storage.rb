@@ -29,5 +29,7 @@ module Tamarillo
       Tomato.new(25 * 60, clock)
     end
 
+    def latest
+    end
   end
 end
