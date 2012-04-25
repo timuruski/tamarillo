@@ -9,9 +9,25 @@ describe Tamarillo::TomatoFile do
   subject { Tamarillo::TomatoFile.new(tomato) }
 
   its(:name) { should == '20110101060000' }
+  its(:path) { should == '2011/0101/20110101060000' }
   its(:content) { should == <<-EOS.chomp }
 2011-01-01T06:00:00-07:00
 Some task I'm working on
 active
-EOS
+  EOS
+
+  describe ".path" do
+    subject { Tamarillo::TomatoFile }
+    
+    specify do
+      path = subject.path(Time.new(1999,12,31,11,59,59))
+      path.should == '1999/1231/19991231115959' 
+    end
+
+    specify do
+      path = subject.path(Time.new(2012,04,10,6,0,23))
+      path.should == '2012/0410/20120410060023' 
+    end
+  end
+
 end

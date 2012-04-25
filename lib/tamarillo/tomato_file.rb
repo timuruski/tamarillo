@@ -3,6 +3,7 @@ require 'time'
 module Tamarillo
   class TomatoFile
     FILENAME_FORMAT = '%Y%m%d%H%M%S'
+    PATH_FORMAT = '%Y/%m%d'
 
     def initialize(tomato)
       @tomato = tomato
@@ -10,6 +11,17 @@ module Tamarillo
 
     def name
       @tomato.started_at.strftime(FILENAME_FORMAT)
+    end
+
+    def path
+      self.class.path(@tomato.started_at)
+    end
+    
+    def self.path(time)
+      dir = time.strftime(PATH_FORMAT)
+      name = time.strftime(FILENAME_FORMAT)
+
+      "#{dir}/#{name}"
     end
 
     def content
