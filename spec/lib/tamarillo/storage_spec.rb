@@ -14,19 +14,19 @@ include Tamarillo
 #         |-060101
 
 describe Storage do
-  # include FakeFS::SpecHelpers
-  before :all do
-    FakeFS.activate!
-  end
+  include FakeFS::SpecHelpers
+  # before :all do
+  #   FakeFS.activate!
+  # end
 
-  after :all do
-    FakeFS.deactivate!
-  end
+  # after :all do
+  #   FakeFS.deactivate!
+  # end
 
   let(:now) { Time.new(2011,1,1,6,0,0) }
   let(:today) { Date.new(2011,1,1) }
   let(:storage_path) { Pathname.new('tmp/tamarillo') }
-  let(:tomato_path) { storage_path.join('20110101060000') }
+  let(:tomato_path) { storage_path.join('2011/0101/20110101060000') }
   let(:sample_tomato) { <<EOS }
 2011-01-01T06:00:00-07:00
 Some task I'm working on
@@ -43,6 +43,8 @@ EOS
 Some task I'm working on
 completed
 EOS
+
+    tomato_path
   end
 
 
@@ -54,9 +56,9 @@ EOS
   end
 
   describe "writing tomatoes to the filesystem" do
-    it "writes files" do
+    it "writes files to the right place" do
+      FakeFS::FileSystem.clear
       FakeFS do
-        FakeFS::FileSystem.clear
         tomato = stub(:started_at => now, :state => :active)
         expect { subject.write(tomato) }.
           to change { File.exist?(tomato_path) }
@@ -98,21 +100,23 @@ EOS
   end
 
   describe "finding most recent tomato" do
+    subject { Storage.new(storage_path).latest }
+
     context "when there are many tomatoes" do
       before do
         create_tomato_file(Date.today.to_time + 6.hours)
         create_tomato_file(Date.today.to_time + 6.hours + 15.minutes)
       end
 
-      subject { Storage.new(storage_path).latest }
-      # its(:started_at) { should == Date.today.to_time + 6.hours + 15.minutes }
+      its(:started_at) { should == Date.today.to_time + 6.hours + 15.minutes }
     end
 
     context "when there are no tomatoes for the day" do
       before do
         create_tomato_file(Date.today.to_time - 2.days)
       end
-      it "returns nil"
+
+      it { should be_nil }
     end
   end
 
