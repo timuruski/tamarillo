@@ -4,24 +4,44 @@ require 'tamarillo/tomato_file'
 require 'fileutils'
 require 'pathname'
 
+# Public: Stores tomatoes using the filesystem.
+#
+# This model represents a directory of Tomato files and configuration.
+# It can read and write them, and find the latest one for the current
+# day.
 module Tamarillo
   class Storage
+    # Returns the String path to the storage directory.
     attr_reader :path
 
+    # Public: Initialize a new storage object.
     def initialize(path)
-      @path = File.expand_path(path)
-      @storage_path = Pathname.new(@path)
-      FileUtils.mkdir_p(@storage_path)
+      @path = Pathname.new(File.expand_path(path))
+      FileUtils.mkdir_p(@path)
     end
 
+    # Public: Write a tomato to the filesystem.
+    #
+    # tomato - A Tomato instance.
+    #
+    # Returns the Pathname to the tomato that was written.
     def write(tomato)
       tomato_file = TomatoFile.new(tomato)
-      tomato_path = @storage_path.join(tomato_file.path)
+      tomato_path = @path.join(tomato_file.path)
       FileUtils.mkdir_p(File.dirname(tomato_path))
       File.open(tomato_path, 'w') { |f| f << tomato_file.content }
+
+      tomato_path
     end
 
+    # Public: Read a tomato from the filesystem.
+    #
+    # path - A String path to a tomato file.
+    #
+    # Returns a Tomato instance if found, nil if not found.
     def read(path)
+      return unless File.exist?(path)
+
       data = File.readlines(path)
       start_time = Time.iso8601(data[0])
 
@@ -29,9 +49,11 @@ module Tamarillo
       Tomato.new(25 * 60, clock)
     end
 
+    # Public: Returns a Tomato instance if one exists.
     def latest
       return unless File.directory?(tomato_dir)
 
+      # XXX tomato_dir.to_s because FakeFS chokes on Pathname.
       if latest_name = Dir.new(tomato_dir.to_s).sort.last
         read(tomato_dir.join(latest_name))
       end
@@ -39,9 +61,10 @@ module Tamarillo
 
     private
 
+    # Private: Returns a Pathname to the current day.
     def tomato_dir
       base_path = File.dirname(TomatoFile.path(Time.now))
-      @storage_path.join(base_path)
+      @path.join(base_path)
     end
 
   end

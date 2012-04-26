@@ -1,6 +1,10 @@
 require 'date'
 
 module Tamarillo
+  # Public: A unit of work.
+  #
+  # A Tomato is a 'pomodoro', it keeps track of the amount of time you
+  # have focused on a single task. It can be interrupted or completed.
   class Tomato
     module States
       ACTIVE = :active.freeze

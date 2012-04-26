@@ -15,18 +15,12 @@ include Tamarillo
 
 describe Storage do
   include FakeFS::SpecHelpers
-  # before :all do
-  #   FakeFS.activate!
-  # end
-
-  # after :all do
-  #   FakeFS.deactivate!
-  # end
 
   let(:now) { Time.new(2011,1,1,6,0,0) }
   let(:today) { Date.new(2011,1,1) }
-  let(:storage_path) { Pathname.new('tmp/tamarillo') }
-  let(:tomato_path) { storage_path.join('2011/0101/20110101060000') }
+  let(:storage_path) { 'tmp/tamarillo' }
+  let(:full_storage_path) { Pathname.new( File.expand_path(storage_path) ) }
+  let(:tomato_path) { full_storage_path.join('2011/0101/20110101060000') }
   let(:sample_tomato) { <<EOS }
 2011-01-01T06:00:00-07:00
 Some task I'm working on
@@ -34,7 +28,7 @@ completed
 EOS
 
   def create_tomato_file(time)
-    folder_path = storage_path.join(time.strftime('%Y/%m%d'))
+    folder_path = full_storage_path.join(time.strftime('%Y/%m%d'))
     tomato_path = folder_path.join(time.strftime('%Y%m%d%H%M%S'))
 
     FileUtils.mkdir_p(folder_path)
@@ -52,7 +46,11 @@ EOS
 
   it "creates the storage directory if it is missing" do
     expect { Storage.new(storage_path) }.
-      to change { File.directory?(storage_path) }
+      to change { File.directory?(full_storage_path) }
+  end
+
+  it "has a path to the storage directory" do
+    subject.path.should == full_storage_path
   end
 
   describe "writing tomatoes to the filesystem" do
@@ -63,6 +61,12 @@ EOS
         expect { subject.write(tomato) }.
           to change { File.exist?(tomato_path) }
       end
+    end
+
+    it "returns a path to the tomato" do
+      tomato = stub(:started_at => now, :state => :active)
+      path = subject.write(tomato)
+      path.should == subject.path.join(tomato_path)
     end
 
     describe "tomato file" do
@@ -85,8 +89,13 @@ EOS
     end
 
     it "can read tomatoes from the filesystem" do
-      tomato = subject.read(tomato_path) # should return a tomato
+      tomato = subject.read(tomato_path)
       tomato.should be
+    end
+
+    it "returns nil of not found" do
+      tomato = subject.read('NOTHING')
+      tomato.should be_nil
     end
 
     describe "the tomato" do
