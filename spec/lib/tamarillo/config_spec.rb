@@ -2,10 +2,12 @@ require 'active_support/core_ext/numeric/time'
 require_relative '../../../lib/tamarillo/config'
 
 describe Tamarillo::Config do
+  let(:default_duration) { Tamarillo::Config::DEFAULT_DURATION_IN_MINUTES }
+
   describe "empty config" do
     subject { Tamarillo::Config.new }
-    its(:duration_in_minutes) { should == 25 }
-    its(:duration_in_seconds) { should == 25 * 60 }
+    its(:duration_in_minutes) { should == default_duration }
+    its(:duration_in_seconds) { should == default_duration * 60 }
   end
 
   describe "duration_in_minutes" do
@@ -21,7 +23,7 @@ describe Tamarillo::Config do
 
     it "assigns the default when value is nil" do
       subject.duration_in_minutes = nil
-      subject.duration_in_minutes.should == 25
+      subject.duration_in_minutes.should == default_duration
     end
 
     it "affects the duration in seconds" do
@@ -47,13 +49,13 @@ describe Tamarillo::Config do
     it "uses the default duration if the YAML is malformed" do
       config_path = Pathname.new('spec/support/invalid-config.yml')
       config = Tamarillo::Config.load(config_path)
-      config.duration_in_seconds.should == 25 * 60
+      config.duration_in_seconds.should == default_duration * 60
     end
 
     it "creates a default config when path is missing" do
       config_path = Pathname.new('some/invalid/path')
       config = Tamarillo::Config.load(config_path)
-      config.duration_in_seconds.should == 25 * 60
+      config.duration_in_seconds.should == default_duration * 60
     end
   end
 
