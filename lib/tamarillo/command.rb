@@ -1,8 +1,8 @@
 require 'tamarillo'
 
 module Tamarillo
-  class CLI
-    def self.start
+  class Command
+    def execute(*args)
       puts "No tomatoes in progress."
     end
   end

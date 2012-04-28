@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
 
-require 'tamarillo/cli'
-Tamarillo::CLI.start
+require 'tamarillo/command'
+Tamarillo::Command.new.execute(ARGV)
