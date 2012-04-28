@@ -29,6 +29,19 @@ module Tamarillo
 
     private :parse_duration
 
+    # Public: Returns the duration of each tomato in minutes.
+    def duration_in_minutes
+      @duration_in_minutes
+    end
+
+    # Public: Sets the duration of each tomato in minutes.
+    #
+    # Uses the default value if the value is invalid.
+    def duration_in_minutes=(value)
+      value = value.to_i
+      @duration_in_minutes = (value > 0) ? value : DEFAULT_DURATION_IN_MINUTES
+    end
+
     # Public: Returns the duration of each tomato in seconds.
     def duration_in_seconds
       @duration_in_minutes.to_i * 60

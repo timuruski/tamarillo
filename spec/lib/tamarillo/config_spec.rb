@@ -19,6 +19,11 @@ describe Tamarillo::Config do
       subject.duration_in_minutes.should == 10
     end
 
+    it "assigns the default when value is nil" do
+      subject.duration_in_minutes = nil
+      subject.duration_in_minutes.should == 25
+    end
+
     it "affects the duration in seconds" do
       subject.duration_in_minutes = 30
       subject.duration_in_seconds.should == 30 * 60
