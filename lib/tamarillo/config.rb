@@ -66,5 +66,14 @@ module Tamarillo
 
       new(options)
     end
+
+    # Public: Write a config out to a file.
+    #
+    # path - a String or Pathname to the destination file.
+    def write(path)
+      options = { duration: duration_in_minutes }
+      yaml = YAML.dump(options)
+      File.open(path, 'w') { |f| f << yaml }
+    end
   end
 end

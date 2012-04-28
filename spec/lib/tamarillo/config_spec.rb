@@ -60,6 +60,12 @@ describe Tamarillo::Config do
   end
 
   describe "write to YAML" do
-    it "can be written to YAML"
+    it "can be written to YAML" do
+      config = Tamarillo::Config.new
+      config.duration_in_minutes = 5
+      config.write('tmp/write-test.yml')
+
+      File.read('tmp/write-test.yml').should include('duration: 5')
+    end
   end
 end
