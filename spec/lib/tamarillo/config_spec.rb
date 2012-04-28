@@ -33,7 +33,23 @@ describe Tamarillo::Config do
   end
 
   describe "read from YAML" do
-    it "can be read from YAML"
+    it "can read the duration from YAML" do
+      config_path = Pathname.new('spec/support/sample-config.yml')
+      config = Tamarillo::Config.load(config_path)
+      config.duration_in_seconds.should == 30 * 60
+    end
+
+    it "uses the default duration if the YAML is malformed" do
+      config_path = Pathname.new('spec/support/invalid-config.yml')
+      config = Tamarillo::Config.load(config_path)
+      config.duration_in_seconds.should == 25 * 60
+    end
+
+    it "creates a default config when path is missing" do
+      config_path = Pathname.new('some/invalid/path')
+      config = Tamarillo::Config.load(config_path)
+      config.duration_in_seconds.should == 25 * 60
+    end
   end
 
   describe "write to YAML" do
