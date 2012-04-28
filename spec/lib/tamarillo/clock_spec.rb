@@ -4,6 +4,10 @@ require 'timecop'
 include Tamarillo
 
 describe Clock do
+  after do
+    Timecop.return
+  end
+
   it "has a start_time" do
     now = Time.new(2012,4,1,6,0,0)
     clock = Clock.new(now)
