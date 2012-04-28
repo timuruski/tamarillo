@@ -11,6 +11,8 @@ freeze it for later analysis.
 It also makes it easy to includes the  current tomato status in your
 prompt. Tomatoes are stored in `~/.tamarillo` by default.
 
+[![Build Status](https://secure.travis-ci.org/[timuruski]/[tamarillo].png)](http://travis-ci.org/[timuruski]/[tamarillo])
+
 
 ## Why Tamarillo?
 
