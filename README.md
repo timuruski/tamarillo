@@ -1,6 +1,6 @@
 # Tamarillo
 
-A command line pomodoro/tomato timer.
+A command line [pomodoro/tomato](http://www.pomodorotechnique.com/) timer.
 
 Currently this will just keep track of whether you are in the middle of
 a tomato. If you are it will display how much time remains. If you
