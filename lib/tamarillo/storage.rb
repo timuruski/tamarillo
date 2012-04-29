@@ -16,7 +16,7 @@ module Tamarillo
 
     # Public: Initialize a new storage object.
     def initialize(path)
-      @path = Pathname.new(File.expand_path(path))
+      @path = Pathname.new(path)
       FileUtils.mkdir_p(@path)
     end
 

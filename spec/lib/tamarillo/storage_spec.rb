@@ -18,9 +18,8 @@ describe Storage do
 
   let(:now) { Time.utc(2011,1,1,6,0,0) }
   let(:today) { Date.new(2011,1,1) }
-  let(:storage_path) { 'tmp/tamarillo' }
-  let(:full_storage_path) { Pathname.new( File.expand_path(storage_path) ) }
-  let(:tomato_path) { full_storage_path.join('2011/0101/20110101060000') }
+  let(:storage_path) { Pathname.new( File.expand_path('tmp/tamarillo')) }
+  let(:tomato_path) { storage_path.join('2011/0101/20110101060000') }
   let(:sample_tomato) { <<EOS }
 2011-01-01T06:00:00Z
 Some task I'm working on
@@ -28,7 +27,7 @@ completed
 EOS
 
   def create_tomato_file(time)
-    folder_path = full_storage_path.join(time.strftime('%Y/%m%d'))
+    folder_path = storage_path.join(time.strftime('%Y/%m%d'))
     tomato_path = folder_path.join(time.strftime('%Y%m%d%H%M%S'))
 
     FileUtils.mkdir_p(folder_path)
@@ -46,11 +45,11 @@ EOS
 
   it "creates the storage directory if it is missing" do
     expect { Storage.new(storage_path) }.
-      to change { File.directory?(full_storage_path) }
+      to change { File.directory?(storage_path) }
   end
 
   it "has a path to the storage directory" do
-    subject.path.should == full_storage_path
+    subject.path.should == storage_path
   end
 
   describe "writing tomatoes to the filesystem" do
@@ -122,7 +121,7 @@ EOS
 
     context "when there are no tomatoes for the day" do
       before do
-        create_tomato_file(Date.today.to_time - 2.days)
+        create_tomato_file(Date.today.to_time - 1.days)
       end
 
       it { should be_nil }
