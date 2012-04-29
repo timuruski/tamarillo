@@ -73,9 +73,10 @@ module Tamarillo
       States::INTERRUPTED == state
     end
 
-    protected
-
-    # Private: Returns which state the Tomato is in.
+    # Public: Returns which state the Tomato is in.
+    #
+    # I'd rather keep this internal, but the storage system needs to
+    # know what state the tamato was in when it was written.
     def state
       if @interrupted
         States::INTERRUPTED
