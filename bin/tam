@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
 
 require 'tamarillo/command'
-Tamarillo::Command.new.execute(ARGV)
+Tamarillo::Command.new.execute(*ARGV)
