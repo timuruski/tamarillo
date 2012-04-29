@@ -60,6 +60,10 @@ describe Tamarillo::Config do
   end
 
   describe "write to YAML" do
+    before do
+      FileUtils.mkdir('tmp') unless File.directory?('tmp')
+    end
+
     it "can be written to YAML" do
       config = Tamarillo::Config.new
       config.duration_in_minutes = 5
