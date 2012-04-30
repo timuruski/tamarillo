@@ -2,8 +2,7 @@ require 'tamarillo'
 
 module Tamarillo
   class Command
-    # DEFAULT_PATH = '~/.tamarillo'
-    DEFAULT_PATH = 'tmp/tamarillo'
+    DEFAULT_PATH = '~/.tamarillo'
     DEFAULT_COMMAND = 'status'
 
     def execute(*args)
@@ -11,10 +10,10 @@ module Tamarillo
       command = command_name(args.first)
 
       @storage = Storage.new(tamarillo_path)
-      send(command.to_sym)
+      send(command.to_sym, *args.drop(1))
     end
 
-    def status
+    def status(*args)
       if tomato = storage.latest
         puts tomato.remaining
       else
@@ -22,7 +21,7 @@ module Tamarillo
       end
     end
 
-    def start
+    def start(*args)
       tomato = storage.latest
       return if tomato && tomato.active?
 
@@ -33,24 +32,42 @@ module Tamarillo
       puts tomato.remaining
     end
 
-    def config
-      puts "Doing config"
+    def config(*args)
+      p args
+      if args.any?
+        args.each do |arg|
+          name, value = arg.split('=',2)
+          _config.send("#{name}=".to_sym, value.strip)
+        end
+        _config.write(config_path)
+      end
+
+      puts _config.to_yaml
     end
 
     private
+
+    def command_name(name)
+      name || DEFAULT_COMMAND
+    end
 
     def storage
       @storage ||= Storage.new(tamarillo_path)
     end
 
-    def tamarillo_path
-      path = ENV['TAMARILLO_PATH'] || DEFAULT_PATH
-      File.expand_path(path)
+    def _config
+      @config ||= Tamarillo::Config.load(config_path)
     end
 
-    def command_name(name)
-      name || DEFAULT_COMMAND
+    def tamarillo_path
+      path = ENV['TAMARILLO_PATH'] || DEFAULT_PATH
+      Pathname.new(File.expand_path(path))
     end
+
+    def config_path
+      tamarillo_path.join('config.yml')
+    end
+
   end
 end
 
