@@ -32,6 +32,13 @@ describe Tamarillo::Config do
     end
   end
 
+  describe "duration" do
+    it "aliases duration_in_minutes" do
+      expect { subject.duration = 10 }
+        .to change { subject.duration_in_minutes }
+    end
+  end
+
   describe "duration_in_seconds" do
     it "converts the duration in minutes into seconds" do
       config = Tamarillo::Config.new(duration_in_minutes: 15)
@@ -70,6 +77,17 @@ describe Tamarillo::Config do
       config.write('tmp/write-test.yml')
 
       File.read('tmp/write-test.yml').should include('duration: 5')
+    end
+  end
+
+  describe "dumping YAML" do
+    it "outputs a YAML format" do
+      config = Tamarillo::Config.new
+      yaml = config.to_yaml
+      yaml.should == <<EOS
+---
+duration: 25
+EOS
     end
   end
 end

@@ -33,6 +33,7 @@ module Tamarillo
     def duration_in_minutes
       @duration_in_minutes
     end
+    alias :duration :duration_in_minutes
 
     # Public: Sets the duration of each tomato in minutes.
     #
@@ -41,6 +42,7 @@ module Tamarillo
       value = value.to_i
       @duration_in_minutes = (value > 0) ? value : DEFAULT_DURATION_IN_MINUTES
     end
+    alias :duration= :duration_in_minutes=
 
     # Public: Returns the duration of each tomato in seconds.
     def duration_in_seconds
@@ -71,9 +73,14 @@ module Tamarillo
     #
     # path - a String or Pathname to the destination file.
     def write(path)
-      options = { duration: duration_in_minutes }
-      yaml = YAML.dump(options)
-      File.open(path, 'w') { |f| f << yaml }
+      File.open(path, 'w') { |f| f << to_yaml }
     end
+
+    # Public: Returns config in YAML format.
+    def to_yaml
+      options = { 'duration' => duration_in_minutes }
+      YAML.dump(options)
+    end
+
   end
 end
