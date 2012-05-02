@@ -15,9 +15,7 @@ module Tamarillo
 
     def status(*args)
       if tomato = storage.latest
-        puts tomato.remaining
-      else
-        puts "No tomatoes in progress."
+        puts format_time(tomato.remaining)
       end
     end
 
@@ -29,7 +27,7 @@ module Tamarillo
       tomato = Tomato.new(25 * 60, clock)
       storage.write(tomato)
 
-      puts tomato.remaining
+      puts format_time(tomato.remaining)
     end
 
     def config(*args)
@@ -66,6 +64,12 @@ module Tamarillo
 
     def config_path
       tamarillo_path.join('config.yml')
+    end
+
+    def format_time(time)
+      minutes = (time / 60).floor
+      seconds = time % 60
+      "%02d:%02d" % [minutes, seconds]
     end
 
   end

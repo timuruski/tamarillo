@@ -1,33 +1,31 @@
 Feature: tamarillo
-  In order to get busy
-  As a developer
-  I want to use Aruba + Cucumber
 
-
-  Scenario: App works
+  Scenario: First usage
+    Given there is no active tomato
     When I run `tam`
-    Then the output should contain:
-    """
-    No tomatoes in progress
-    """
-
-  Scenario: First run
-    Given I have no active tomato
-    And I have no previous tomatoes
-    When I run `tam`
-    Then pending
+    Then the exit status should be 0
+    Then the output should be nothing
 
   Scenario: Starting a tomato
-    Given I have no active tomato
-    When I run `tam start "Some task I'm working on"`
-    Then pending
+    Given the default configuration
+    And there is no active tomato
+    When I run `tam start`
+    Then the exit status should be 0
+    Then the output should match:
+    """
+    25:00
+    """
+  
+  Scenario: Tomato status
+  Given the default configuration
+  And there is an active tomato
+  When I run `tam`
+  Then the output should match:
+  """
+  10:32
+  """
 
   Scenario: Interrupting a tomato
-    Given I have an active tomato
+    Given there is an active tomato
     When I run `tam interrupt'
-    Then pending
-
-  Scenario: Cleaning up
-    Given I have tomatoes from last month
-    When I run `tam cleanup`
     Then pending
