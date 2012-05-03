@@ -6,7 +6,6 @@ module Tamarillo
     DEFAULT_COMMAND = 'status'
 
     def execute(*args)
-      # puts "#{tamarillo_path}"
       command = command_name(args.first)
 
       @storage = Storage.new(tamarillo_path)
@@ -14,8 +13,8 @@ module Tamarillo
     end
 
     def status(*args)
-      if tomato = storage.latest
-        puts format_time(tomato.remaining)
+      if tomato = storage.latest and tomato.active?
+        format_time(tomato.remaining)
       end
     end
 
@@ -30,8 +29,15 @@ module Tamarillo
       puts format_time(tomato.remaining)
     end
 
+    def interrupt(*args)
+      if tomato = storage.latest
+        tomato.interrupt!
+        path = storage.write(tomato)
+        # puts File.read(path)
+      end
+    end
+
     def config(*args)
-      p args
       if args.any?
         args.each do |arg|
           name, value = arg.split('=',2)
