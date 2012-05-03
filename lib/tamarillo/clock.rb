@@ -18,6 +18,11 @@ module Tamarillo
       @start_date = start_time.to_date
     end
 
+    # Public: Returns a clock starting at the current time.
+    def self.now
+      new(Time.now)
+    end
+
     # Public: Calculate time elapsed.
     #
     # Returns the number of seconds since the clock started.

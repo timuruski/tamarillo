@@ -28,4 +28,12 @@ describe Clock do
 
     clock.elapsed.should == 30
   end
+
+  describe "#now" do
+    it "creates an instance starting at the current time" do
+      Timecop.freeze(2012,1,1,6,0,30)
+      clock = Clock.now
+      clock.start_time.should == Time.now
+    end
+  end
 end
