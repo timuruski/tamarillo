@@ -44,9 +44,13 @@ module Tamarillo
 
       data = File.readlines(path)
       start_time = Time.iso8601(data[0])
+      state = data[2]
 
       clock = Clock.new(start_time)
-      Tomato.new(25 * 60, clock)
+      tomato = Tomato.new(25 * 60, clock)
+      tomato.interrupt! if state == 'interrupted'
+      
+      tomato
     end
 
     # Public: Returns a Tomato instance if one exists.

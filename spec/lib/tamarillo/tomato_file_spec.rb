@@ -19,6 +19,11 @@ Some task I'm working on
 completed
   EOS
 
+  it "can write an interrupted tomato" do
+    tomato.interrupt!
+    subject.content.should include('interrupted')
+  end
+
   describe ".path" do
     subject { Tamarillo::TomatoFile }
     

@@ -26,15 +26,16 @@ Some task I'm working on
 completed
 EOS
 
-  def create_tomato_file(time)
+  def create_tomato_file(time, options = {})
     folder_path = storage_path.join(time.strftime('%Y/%m%d'))
     tomato_path = folder_path.join(time.strftime('%Y%m%d%H%M%S'))
+    state = options.fetch(:state) { 'completed' }
 
     FileUtils.mkdir_p(folder_path)
     File.open(tomato_path, 'w') { |f| f << <<EOS }
 #{time.iso8601}
 Some task I'm working on
-completed
+#{state}
 EOS
 
     tomato_path
@@ -104,6 +105,12 @@ EOS
       its(:started_at) { should == now }
       its(:date) { should == today }
       it { should be_completed }
+    end
+
+    it "handles interrupted tomatoes" do
+      create_tomato_file(now, :state => 'interrupted')
+      tomato = subject.read(tomato_path)
+      tomato.should be_interrupted
     end
   end
 
