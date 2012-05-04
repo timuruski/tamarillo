@@ -43,7 +43,7 @@ module Tamarillo
       return unless File.exist?(path)
 
       data = File.readlines(path)
-      start_time = Time.iso8601(data[0])
+      start_time = Time.iso8601(data[0]).localtime
       state = data[2]
 
       clock = Clock.new(start_time)

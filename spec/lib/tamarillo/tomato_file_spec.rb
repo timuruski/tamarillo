@@ -4,7 +4,7 @@ require_relative '../../../lib/tamarillo/clock'
 
 describe Tamarillo::TomatoFile do
   # FIXME Timezones will change when running test, argh
-  let(:time) { Time.utc(2011,1,1, 6,0,0) }
+  let(:time) { Time.local(2011,1,1, 6,0,0) }
   let(:today) { Date.new(2011,1,1) }
   let(:clock) { Tamarillo::Clock.new(time) }
   let(:tomato) { Tamarillo::Tomato.new(25 * 60, clock) }
@@ -14,7 +14,7 @@ describe Tamarillo::TomatoFile do
   its(:name) { should == '20110101060000' }
   its(:path) { should == '2011/0101/20110101060000' }
   its(:content) { should == <<-EOS.chomp }
-2011-01-01T06:00:00Z
+2011-01-01T06:00:00-07:00
 Some task I'm working on
 completed
   EOS
