@@ -14,7 +14,7 @@ module Tamarillo
 
     def status(*args)
       if tomato = storage.latest and tomato.active?
-        format_time(tomato.remaining)
+        puts format_time(tomato.remaining)
       end
     end
 
