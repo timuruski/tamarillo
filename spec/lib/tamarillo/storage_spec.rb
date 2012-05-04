@@ -77,7 +77,7 @@ EOS
 
       subject { FakeFS { File.readlines(tomato_path.to_s) } }
 
-      specify { subject[0].should == "2011-01-01T06:00:00-07:00" }
+      specify { subject[0].should == time.iso8601}
       specify { subject[1].should == "Some task I'm working on" }
       specify { subject[2].should == 'active' }
     end
