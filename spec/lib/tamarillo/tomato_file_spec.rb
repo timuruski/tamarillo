@@ -14,7 +14,7 @@ describe Tamarillo::TomatoFile do
   its(:name) { should == '20110101060000' }
   its(:path) { should == '2011/0101/20110101060000' }
   its(:content) { should == <<-EOS.chomp }
-2011-01-01T06:00:00-07:00
+#{time.iso8601}
 Some task I'm working on
 completed
   EOS

@@ -16,12 +16,12 @@ include Tamarillo
 describe Storage do
   include FakeFS::SpecHelpers
 
-  let(:now) { Time.local(2011,1,1,6,0,0) }
-  let(:today) { Date.new(2011,1,1) }
+  let(:time) { Time.local(2011,1,1,6,0,0) }
+  let(:date) { Date.new(2011,1,1) }
   let(:storage_path) { Pathname.new( File.expand_path('tmp/tamarillo')) }
   let(:tomato_path) { storage_path.join('2011/0101/20110101060000') }
   let(:sample_tomato) { <<EOS }
-2011-01-01T06:00:00-07:00
+#{time.iso8601}
 Some task I'm working on
 completed
 EOS
@@ -57,21 +57,21 @@ EOS
     it "writes files to the right place" do
       FakeFS::FileSystem.clear
       FakeFS do
-        tomato = stub(:started_at => now, :state => :active)
+        tomato = stub(:started_at => time, :state => :active)
         expect { subject.write(tomato) }.
           to change { File.exist?(tomato_path) }
       end
     end
 
     it "returns a path to the tomato" do
-      tomato = stub(:started_at => now, :state => :active)
+      tomato = stub(:started_at => time, :state => :active)
       path = subject.write(tomato)
       path.should == subject.path.join(tomato_path)
     end
 
     describe "tomato file" do
       before do
-        tomato = stub(:started_at => now, :date => today, :state => :active)
+        tomato = stub(:started_at => time, :date => date, :state => :active)
         Storage.new(storage_path).write(tomato)
       end
 
@@ -85,7 +85,7 @@ EOS
 
   describe "reading tomatoes from the filesystem" do
     before do
-      create_tomato_file(now)
+      create_tomato_file(time)
     end
 
     it "can read tomatoes from the filesystem" do
@@ -102,13 +102,13 @@ EOS
       let(:storage) { Storage.new(storage_path) }
       subject { storage.read(tomato_path) }
 
-      its(:started_at) { should == now }
-      its(:date) { should == today }
+      its(:started_at) { should == time }
+      its(:date) { should == date }
       it { should be_completed }
     end
 
     it "handles interrupted tomatoes" do
-      create_tomato_file(now, :state => 'interrupted')
+      create_tomato_file(time, :state => 'interrupted')
       tomato = subject.read(tomato_path)
       tomato.should be_interrupted
     end
