@@ -56,10 +56,11 @@ module Tamarillo
     # Public: Returns a Tomato instance if one exists.
     def latest
       return unless File.directory?(tomato_dir)
+      # p Dir.glob(tomato_dir.join('*'))
 
       # XXX tomato_dir.to_s because FakeFS chokes on Pathname.
-      if latest_name = Dir.new(tomato_dir.to_s).sort.last
-        read(tomato_dir.join(latest_name))
+      if latest_name = Dir.glob(tomato_dir.join('*')).sort.last
+        read(latest_name)
       end
     end
 
