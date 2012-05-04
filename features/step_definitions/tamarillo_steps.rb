@@ -1,5 +1,3 @@
-# World(Tamarillo::API)
-
 def tamarillo_path
   Pathname.new("#{current_dir}/tamarillo")
 end
@@ -28,9 +26,4 @@ end
 
 Then /^the output should be empty$/ do
   assert_exact_output('', all_output)
-end
-
-Then /^blah$/ do
-  storage = Tamarillo::Storage.new('tamarillo')
-  p storage.latest.active?
 end
