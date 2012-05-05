@@ -6,10 +6,13 @@ module Tamarillo
     DEFAULT_COMMAND = 'status'
 
     def execute(*args)
-      command = command_name(args.first)
-
-      @storage = Storage.new(tamarillo_path)
-      send(command.to_sym, *args.drop(1))
+      begin
+        command = command_name(args.first)
+        send(command.to_sym, *args.drop(1))
+      rescue NoMethodError
+        puts "Invalid command '#{command}'"
+        exit 1
+      end
     end
 
     def status(*args)
