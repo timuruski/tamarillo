@@ -33,7 +33,6 @@ module Tamarillo
       if tomato = storage.latest
         tomato.interrupt!
         path = storage.write(tomato)
-        # puts File.read(path)
       end
     end
 
@@ -73,9 +72,8 @@ module Tamarillo
     end
 
     def format_time(time)
-      minutes = (time / 60).floor
-      seconds = time % 60
-      "%02d:%02d" % [minutes, seconds]
+      minutes = (time / 60).round
+      'About %d minutes' % minutes
     end
 
   end

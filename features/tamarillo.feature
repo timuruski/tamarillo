@@ -10,13 +10,13 @@ Feature: tamarillo
     Given the default configuration
       And there is no active tomato
     When I run `tam start`
-    Then the output should match /\d+:\d+/
+    Then the output should match /About \d+ minutes/
       And the exit status should be 0
   
   Scenario: Tomato status
-  Given there is an active tomato
-  When I run `tam`
-  Then the output should match /\d+:\d+/
+    Given there is an active tomato
+    When I run `tam`
+    Then the output should match /About \d+ minutes/
 
   Scenario: Interrupting a tomato
     Given there is an active tomato
