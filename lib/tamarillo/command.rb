@@ -23,7 +23,8 @@ module Tamarillo
       return if tomato && tomato.active?
 
       clock = Clock.new(Time.now)
-      tomato = Tomato.new(25 * 60, clock)
+      duration = _config.duration_in_seconds
+      tomato = Tomato.new(duration, clock)
       storage.write(tomato)
 
       puts format_time(tomato.remaining)

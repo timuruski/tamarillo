@@ -19,7 +19,7 @@ Feature: configuration
     duration: 15
     """
 
-  Scenario: setting invalid duration
+  Scenario: Setting invalid duration
     Given the default configuration
     When I run `tam config duration=invalid_input`
     And I run `tam config`
@@ -27,4 +27,13 @@ Feature: configuration
     Then the output should contain:
     """
     duration: 25
+    """
+
+  Scenario: Changing the tomato duration
+    Given there is no active tomato
+    When I run `tam config duration=5`
+    And I run `tam start`
+    Then the output should contain:
+    """
+    About 5 minutes
     """
