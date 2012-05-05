@@ -13,8 +13,8 @@ module Tamarillo
       INTERRUPTED = :interrupted.freeze
     end
 
-    # Public: Returns the length of the Tomato in seconds.
-    attr_reader :duration
+    # Public: Gets/Sets the length of the tomato in seconds.
+    attr_accessor :duration
 
     # Public: Initializes a new Tomato.
     #

@@ -14,6 +14,11 @@ describe Tomato do
     its(:duration) { should == 25.minutes }
     its(:started_at) { should == now }
     its(:date) { should == today }
+
+    it "update the duration" do
+      subject.duration = 5.minutes
+      subject.duration.should == 5.minutes
+    end
   end
 
   describe "comparison" do

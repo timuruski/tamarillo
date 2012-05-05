@@ -33,7 +33,12 @@ Feature: configuration
     Given there is no active tomato
     When I run `tam config duration=5`
     And I run `tam start`
+    And I run `tam`
     Then the output should contain:
     """
     About 5 minutes
+    """
+    And the output should not contain:
+    """
+    About 25 minutes
     """
