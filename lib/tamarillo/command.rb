@@ -26,7 +26,7 @@ module Tamarillo
       return if tomato && tomato.active?
 
       clock = Clock.new(Time.now)
-      duration = _config.duration_in_seconds
+      duration = current_config.duration_in_seconds
       tomato = Tomato.new(duration, clock)
       storage.write(tomato)
 
@@ -44,12 +44,12 @@ module Tamarillo
       if args.any?
         args.each do |arg|
           name, value = arg.split('=',2)
-          _config.send("#{name}=".to_sym, value.strip)
+          current_config.send("#{name}=".to_sym, value.strip)
         end
-        _config.write(config_path)
+        current_config.write(config_path)
       end
 
-      puts _config.to_yaml
+      puts current_config.to_yaml
     end
 
     private
@@ -59,10 +59,10 @@ module Tamarillo
     end
 
     def storage
-      @storage ||= Storage.new(tamarillo_path, _config)
+      @storage ||= Storage.new(tamarillo_path, current_config)
     end
 
-    def _config
+    def current_config
       @config ||= Tamarillo::Config.load(config_path)
     end
 
