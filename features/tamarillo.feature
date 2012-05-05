@@ -23,6 +23,12 @@ Feature: tamarillo
     When I run `tam interrupt`
     And I run `tam`
     Then the output should be empty
+
+  Scenario: A tomato is completed
+    Given there is a completed tomato
+    When I run `tam`
+    Then the output should be empty
+
   Scenario: Invalid command
     When I run `tam blah`
     Then the exit status should be 1

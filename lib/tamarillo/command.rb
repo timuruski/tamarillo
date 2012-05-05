@@ -17,7 +17,6 @@ module Tamarillo
 
     def status(*args)
       if tomato = storage.latest and tomato.active?
-        tomato.duration = _config.duration_in_seconds
         puts format_time(tomato.remaining)
       end
     end
@@ -60,7 +59,7 @@ module Tamarillo
     end
 
     def storage
-      @storage ||= Storage.new(tamarillo_path)
+      @storage ||= Storage.new(tamarillo_path, _config)
     end
 
     def _config
