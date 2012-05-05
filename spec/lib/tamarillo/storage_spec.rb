@@ -53,6 +53,16 @@ EOS
     subject.path.should == storage_path
   end
 
+  it "has a default configuration" do
+    subject.config.should be_a(Tamarillo::Config)
+  end
+
+  it "can accept a specific configuration" do
+    config = stub(:duration => 10)
+    storage = Storage.new(storage_path, config)
+    storage.config.duration.should == 10
+  end
+
   describe "writing tomatoes to the filesystem" do
     it "writes files to the right place" do
       FakeFS::FileSystem.clear
@@ -99,11 +109,13 @@ EOS
     end
 
     describe "the tomato" do
-      let(:storage) { Storage.new(storage_path) }
+      let(:config) { stub(:duration_in_seconds => 10.minutes) }
+      let(:storage) { Storage.new(storage_path, config) }
       subject { storage.read(tomato_path) }
 
       its(:started_at) { should == time }
       its(:date) { should == date }
+      its(:duration) { should == 10.minutes }
       it { should be_completed }
     end
 

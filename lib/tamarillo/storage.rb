@@ -1,4 +1,5 @@
 require 'tamarillo/clock'
+require 'tamarillo/config'
 require 'tamarillo/tomato'
 require 'tamarillo/tomato_file'
 require 'fileutils'
@@ -11,11 +12,15 @@ require 'pathname'
 # day.
 module Tamarillo
   class Storage
-    # Returns the String path to the storage directory.
+    # Returns: the String path to the storage directory.
     attr_reader :path
+    # Returns: the Config for this storage.
+    # Used to set the duration when reading tomatoes in.
+    attr_reader :config
 
     # Public: Initialize a new storage object.
-    def initialize(path)
+    def initialize(path, config = nil)
+      @config = config || Tamarillo::Config.new
       @path = Pathname.new(path)
       FileUtils.mkdir_p(@path)
     end
@@ -47,7 +52,8 @@ module Tamarillo
       state = data[2]
 
       clock = Clock.new(start_time)
-      tomato = Tomato.new(25 * 60, clock)
+      duration = config.duration_in_seconds
+      tomato = Tomato.new(duration, clock)
       tomato.interrupt! if state == 'interrupted'
       
       tomato
