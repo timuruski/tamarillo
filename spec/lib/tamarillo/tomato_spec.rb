@@ -9,11 +9,12 @@ describe Tomato do
   describe "basic attibutes" do
     let(:now) { Time.new(2012,1,1,6,0,0) }
     let(:today) { Date.new(2012,1,1) }
-    let(:clock) { stub(:start_time => now, :start_date => today) }
+    let(:clock) { stub(:start_time => now, :start_date => today, :elapsed => 60) }
 
     its(:duration) { should == 25.minutes }
     its(:started_at) { should == now }
     its(:date) { should == today }
+    its(:elapsed) { should == clock.elapsed }
 
     it "update the duration" do
       subject.duration = 5.minutes

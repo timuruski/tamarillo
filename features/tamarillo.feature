@@ -37,3 +37,11 @@ Feature: tamarillo
     Invalid command 'blah'
     """
 
+  Scenario: Tomato status for prompt
+    Given there is an active tomato
+    When I run `tam status --prompt`
+    Then the output should contain:
+    """
+    25:00 1500 1500
+    """
+

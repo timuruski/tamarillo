@@ -16,8 +16,11 @@ module Tamarillo
     end
 
     def status(*args)
-      if tomato = storage.latest and tomato.active?
-        puts format_time(tomato.remaining)
+      return unless tomato = storage.latest and tomato.active?
+      if args.include?('--prompt')
+        puts format_prompt(tomato)
+      else
+        puts format_approx_time(tomato.remaining)
       end
     end
 
@@ -30,7 +33,7 @@ module Tamarillo
       tomato = Tomato.new(duration, clock)
       storage.write(tomato)
 
-      puts format_time(tomato.remaining)
+      puts format_approx_time(tomato.remaining)
     end
 
     def interrupt(*args)
@@ -75,11 +78,20 @@ module Tamarillo
       tamarillo_path.join('config.yml')
     end
 
-    def format_time(time)
+    def format_approx_time(time)
       minutes = (time / 60).round
       'About %d minutes' % minutes
     end
 
+    def format_time(time)
+      minutes = (time / 60).floor
+      seconds = time % 60
+      "%02d:%02d" % [minutes, seconds]
+    end
+
+    def format_prompt(tomato)
+      puts [format_time(tomato.remaining), tomato.remaining, tomato.duration].join(' ')
+    end
   end
 end
 

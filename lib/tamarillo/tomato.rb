@@ -49,6 +49,11 @@ module Tamarillo
       d > 0 ? d : 0
     end
 
+    # Public: Returns the number of seconds elapsed since start.
+    def elapsed
+      @clock.elapsed
+    end
+
     # Public: Marks the tomato as interrupted.
     #
     # Returns the Tomato.
