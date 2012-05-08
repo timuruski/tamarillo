@@ -1,4 +1,5 @@
 require 'tamarillo/version'
 require 'tamarillo/config'
+require 'tamarillo/monitor'
 require 'tamarillo/tomato'
 require 'tamarillo/storage'
