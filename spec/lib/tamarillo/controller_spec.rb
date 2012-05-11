@@ -1,6 +1,6 @@
 require_relative '../../../lib/tamarillo/controller'
 
-describe Tamararillo::Controller do
+describe Tamarillo::Controller do
   describe "#status" do
   end
 
