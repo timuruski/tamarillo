@@ -17,7 +17,7 @@ end
 Cucumber::Rake::Task.new(:features) do |t|
   tag_opts = ' --tags ~@pending'
   tag_opts = " --tags #{ENV['TAGS']}" if ENV['TAGS']
-  t.cucumber_opts = "features --format pretty -x -s#{tag_opts}"
+  t.cucumber_opts = "features --format progress -x -s#{tag_opts}"
   t.fork = false
 end
 task :default => [:spec, :features]
