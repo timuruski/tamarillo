@@ -29,15 +29,22 @@ module Tamarillo
       end
     end
 
+    # Public: Starts a new tomato if one is not already running.
     def start_new_tomato
+      return if @storage.latest
+      tomato = Tomato.new(@config.duration_in_seconds, Clock.now)
+      @storage.write(tomato)
     end
 
+    # Public: Interrupts the current tomato if one is running.
     def interrupt_current_tomato
     end
 
+    # Public: Returns the current config.
     def config
     end
 
+    # Public: Updates the current config.
     def update_config
     end
 
