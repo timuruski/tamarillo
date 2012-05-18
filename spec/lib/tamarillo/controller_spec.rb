@@ -1,8 +1,8 @@
 require_relative '../../../lib/tamarillo/controller'
 
 describe Tamarillo::Controller do
-  let(:config) { stub }
-  let(:storage) { stub }
+  let(:config) { double('config') }
+  let(:storage) { double('storage') }
 
   subject { Tamarillo::Controller.new(config, storage) }
 
@@ -61,9 +61,25 @@ describe Tamarillo::Controller do
   end
 
   describe "#interrupt_current_tomato" do
+    it "interrupts the current tomato" do
+      tomato = double('tomato')
+      tomato.should_receive(:interrupt!)
+      storage.should_receive(:latest).and_return(tomato)
+
+      subject.interrupt_current_tomato
+    end
+
+    it "doesn't raise if no tomato is present" do
+      storage.should_receive(:latest).and_return(nil)
+      expect { subject.interrupt_current_tomato }
+        .should_not raise_error(NoMethodError)
+    end
   end
 
   describe "#config" do
+    it "returns the passed in config" do
+      subject.config.should == config
+    end
   end
 
   describe "#update_config" do

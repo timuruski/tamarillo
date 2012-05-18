@@ -38,10 +38,15 @@ module Tamarillo
 
     # Public: Interrupts the current tomato if one is running.
     def interrupt_current_tomato
+      tomato = @storage.latest
+      return if tomato.nil?
+
+      tomato.interrupt!
     end
 
     # Public: Returns the current config.
     def config
+      @config
     end
 
     # Public: Updates the current config.
