@@ -20,7 +20,7 @@ module Tamarillo
     # Public: Formats and returns the status of the current tomato.
     # Returns nil if no tomato is found.
     def status(format)
-      return unless tomato = @storage.latest
+      return unless tomato = @storage.latest and tomato.active?
 
       case format
       when Formats::HUMAN then format_approx_time(tomato.remaining)

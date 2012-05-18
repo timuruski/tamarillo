@@ -7,7 +7,9 @@ describe Tamarillo::Controller do
   subject { Tamarillo::Controller.new(config, storage) }
 
   describe "#status" do
-    let(:tomato) { stub(:remaining => 1500, :duration => 1500) }
+    let(:tomato) do
+      stub(:remaining => 1500, :duration => 1500, :active? => true)
+    end
     let(:storage) { stub(:latest => tomato) }
 
     it "can return a humanized format" do
@@ -21,6 +23,11 @@ describe Tamarillo::Controller do
     it "complains if the format is invalid" do
       expect { subject.status('invalid') }
         .should raise_error
+    end
+
+    it "returns nil if no active tomato" do
+      tomato.stub(:active?) { false }
+      subject.status(Tamarillo::Formats::HUMAN).should be_nil
     end
   end
 
