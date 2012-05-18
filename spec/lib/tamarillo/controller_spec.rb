@@ -83,5 +83,14 @@ describe Tamarillo::Controller do
   end
 
   describe "#update_config" do
+    it "can update the duration" do
+      config.should_receive(:duration=).with(10)
+      subject.update_config(:duration => 10)
+    end
+
+    it "ignores bogus arguments" do
+      config.should_not_receive(:foo=).with('bar')
+      subject.update_config(:foo => 'bar')
+    end
   end
 end

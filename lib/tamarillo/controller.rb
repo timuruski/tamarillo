@@ -50,10 +50,18 @@ module Tamarillo
     end
 
     # Public: Updates the current config.
-    def update_config
+    def update_config(options = {})
+      valid_config_options(options).each do |key,value|
+        @config.send("#{key}=".to_sym, value)
+      end
     end
 
     private
+
+    def valid_config_options(options)
+      valid_keys = %w[duration]
+      options.select { |k,_| valid_keys.include?(k.to_s) }
+    end
 
     def format_approx_time(time)
       minutes = (time / 60).round
