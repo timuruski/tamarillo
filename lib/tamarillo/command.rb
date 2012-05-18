@@ -5,6 +5,12 @@ module Tamarillo
     DEFAULT_PATH = '~/.tamarillo'
     DEFAULT_COMMAND = 'status'
 
+    def initialize
+      config = Tamarillo::Config.load(config_path)
+      storage = Storage.new(tamarillo_path, current_config)
+      @controller = Controller.new(config, storage)
+    end
+
     def execute(*args)
       begin
         command = command_name(args.first)
@@ -16,12 +22,11 @@ module Tamarillo
     end
 
     def status(*args)
-      return unless tomato = storage.latest and tomato.active?
-      if args.include?('--prompt')
-        puts format_prompt(tomato)
-      else
-        puts format_approx_time(tomato.remaining)
-      end
+      format = Formats::HUMAN
+      format = Formats::PROMPT if args.include?('--prompt')
+
+      status = @controller.status(format)
+      puts status unless status.nil?
     end
 
     def start(*args)
