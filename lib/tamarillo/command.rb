@@ -30,22 +30,12 @@ module Tamarillo
     end
 
     def start(*args)
-      tomato = storage.latest
-      return if tomato && tomato.active?
-
-      clock = Clock.new(Time.now)
-      duration = current_config.duration_in_seconds
-      tomato = Tomato.new(duration, clock)
-      storage.write(tomato)
-
-      puts format_approx_time(tomato.remaining)
+      tomato = @controller.start_new_tomato
+      status unless tomato.nil?
     end
 
     def interrupt(*args)
-      if tomato = storage.latest
-        tomato.interrupt!
-        path = storage.write(tomato)
-      end
+      @controller.interrupt_current_tomato
     end
 
     def config(*args)

@@ -65,12 +65,19 @@ describe Tamarillo::Controller do
 
       subject.start_new_tomato
     end
+
+    it "returns the started tomato" do
+      storage.stub(:latest => nil)
+      storage.stub(:write)
+      subject.start_new_tomato.should be_a(Tamarillo::Tomato)
+    end
   end
 
   describe "#interrupt_current_tomato" do
     it "interrupts the current tomato" do
       tomato = double('tomato')
       tomato.should_receive(:interrupt!)
+      storage.stub(:write)
       storage.should_receive(:latest).and_return(tomato)
 
       subject.interrupt_current_tomato
@@ -80,6 +87,15 @@ describe Tamarillo::Controller do
       storage.should_receive(:latest).and_return(nil)
       expect { subject.interrupt_current_tomato }
         .should_not raise_error(NoMethodError)
+    end
+
+    it "writes the tomato" do
+      tomato = double('tomato')
+      tomato.stub(:interrupt!)
+      storage.stub(:latest => tomato)
+      storage.should_receive(:write).with(tomato)
+
+      subject.interrupt_current_tomato
     end
   end
 

@@ -34,6 +34,8 @@ module Tamarillo
       return if @storage.latest
       tomato = Tomato.new(@config.duration_in_seconds, Clock.now)
       @storage.write(tomato)
+
+      tomato
     end
 
     # Public: Interrupts the current tomato if one is running.
@@ -42,6 +44,7 @@ module Tamarillo
       return if tomato.nil?
 
       tomato.interrupt!
+      @storage.write(tomato)
     end
 
     # Public: Returns the current config.
