@@ -40,8 +40,8 @@ Feature: tamarillo
   Scenario: Tomato status for prompt
     Given there is an active tomato
     When I run `tam status --prompt`
-    Then the output should contain:
+    Then the output should match:
     """
-    25:00 1500 1500
+    \d\d:\d\d \d{4} \d{4}
     """
 
