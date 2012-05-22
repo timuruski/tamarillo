@@ -5,20 +5,17 @@ module Tamarillo
     DEFAULT_PATH = '~/.tamarillo'
     DEFAULT_COMMAND = 'status'
 
+    VALID_COMMANDS = %w[status config start interrupt]
+
     def initialize
       config = Tamarillo::Config.load(config_path)
-      storage = Storage.new(tamarillo_path, current_config)
+      storage = Storage.new(tamarillo_path, config)
       @controller = Controller.new(config, storage)
     end
 
     def execute(*args)
-      begin
-        command = command_name(args.first)
-        send(command.to_sym, *args.drop(1))
-      rescue NoMethodError
-        puts "Invalid command '#{command}'"
-        exit 1
-      end
+      command = parse_command_name!(args)
+      send(command.to_sym, *args.drop(1))
     end
 
     def status(*args)
@@ -39,29 +36,21 @@ module Tamarillo
     end
 
     def config(*args)
-      if args.any?
-        args.each do |arg|
-          name, value = arg.split('=',2)
-          current_config.send("#{name}=".to_sym, value.strip)
-        end
-        current_config.write(config_path)
-      end
-
-      puts current_config.to_yaml
+      params = Hash[args.map { |pair| pair.split('=', 2) }]
+      @controller.update_config(params)
+      puts @controller.config.to_yaml
     end
 
     private
 
-    def command_name(name)
-      name || DEFAULT_COMMAND
-    end
+    def parse_command_name!(args)
+      name = args.first || DEFAULT_COMMAND
+      unless VALID_COMMANDS.include?(name)
+        puts "Invalid command '#{name}'"
+        exit 1
+      end
 
-    def storage
-      @storage ||= Storage.new(tamarillo_path, current_config)
-    end
-
-    def current_config
-      @config ||= Tamarillo::Config.load(config_path)
+      name
     end
 
     def tamarillo_path
@@ -73,20 +62,6 @@ module Tamarillo
       tamarillo_path.join('config.yml')
     end
 
-    def format_approx_time(time)
-      minutes = (time / 60).round
-      'About %d minutes' % minutes
-    end
-
-    def format_time(time)
-      minutes = (time / 60).floor
-      seconds = time % 60
-      "%02d:%02d" % [minutes, seconds]
-    end
-
-    def format_prompt(tomato)
-      puts [format_time(tomato.remaining), tomato.remaining, tomato.duration].join(' ')
-    end
   end
 end
 

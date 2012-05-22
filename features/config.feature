@@ -1,6 +1,6 @@
 Feature: configuration
 
-  Scenario: Outputting the currng config
+  Scenario: Outputting the current config
     Given the default configuration
     When I run `tam config`
     Then the exit status should be 0
