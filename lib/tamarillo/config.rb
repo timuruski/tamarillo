@@ -16,18 +16,8 @@ module Tamarillo
     # options - The hash used to configure Tamarillo.
     #           :duration_in_minutes - The duration in minutes.
     def initialize(options = {})
-      @duration_in_minutes = parse_duration(options[:duration_in_minutes])
+      self.duration_in_minutes = options[:duration_in_minutes]
     end
-
-    # Internal: Ensures duration is an integer.
-    #
-    # Returns: An integer value or the default duration.
-    def parse_duration(value)
-      return value.to_i unless value.nil?
-      DEFAULT_DURATION_IN_MINUTES
-    end
-
-    private :parse_duration
 
     # Public: Returns the duration of each tomato in minutes.
     def duration_in_minutes
