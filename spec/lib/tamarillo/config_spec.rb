@@ -46,6 +46,24 @@ describe Tamarillo::Config do
     end
   end
 
+  describe "notifier" do
+    it "can be read" do
+      config = Tamarillo::Config.new(notifier: Tamarillo::Notification::SPEECH)
+      config.notifier.should == Tamarillo::Notification::SPEECH
+    end
+
+    it "can be assigned" do
+      config = Tamarillo::Config.new
+      config.notifier = 'Growl'
+      config.notifier.should == Tamarillo::Notification::GROWL
+    end
+
+    it "has a default value" do
+      config = Tamarillo::Config.new
+      config.notifier.should == Tamarillo::Notification::BELL
+    end
+  end
+
   describe "read from YAML" do
     it "can read the duration from YAML" do
       config_path = Pathname.new('spec/support/sample-config.yml')

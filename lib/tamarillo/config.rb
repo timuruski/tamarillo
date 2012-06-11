@@ -1,4 +1,5 @@
 require 'yaml'
+require 'tamarillo/notification'
 
 module Tamarillo
   # Internal: This configures the Tamarillo CLI, which uses values from
@@ -17,6 +18,7 @@ module Tamarillo
     #           :duration_in_minutes - The duration in minutes.
     def initialize(options = {})
       self.duration_in_minutes = options[:duration_in_minutes]
+      self.notifier = options[:notifier]
     end
 
     # Public: Returns the duration of each tomato in minutes.
@@ -37,6 +39,16 @@ module Tamarillo
     # Public: Returns the duration of each tomato in seconds.
     def duration_in_seconds
       @duration_in_minutes.to_i * 60
+    end
+
+    # Public: Returns the notifier type.
+    def notifier
+      @notifier
+    end
+
+    # Public: Sets the notifier type.
+    def notifier=(value)
+      @notifier = Notification.valid!(value)
     end
 
     # Public: Initializes a config from a YAML file.
