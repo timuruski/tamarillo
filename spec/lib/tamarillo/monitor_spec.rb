@@ -18,9 +18,11 @@ describe Tamarillo::Monitor do
     t
   end
 
+  # XXX This test is intentionally slow, 
+  # as a result it is horrible.
   it "watches a tomato for completion" do
     subject.start
-    sleep 1
+    sleep 0.1
     completed?.should be_true
   end
 end
