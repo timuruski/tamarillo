@@ -33,7 +33,7 @@ module Tamarillo
     def start_new_tomato
       return if @storage.latest
       tomato = Tomato.new(@config.duration_in_seconds, Clock.now)
-      @storage.write(tomato)
+      @storage.write_tomato(tomato)
 
       tomato
     end
@@ -44,7 +44,7 @@ module Tamarillo
       return if tomato.nil?
 
       tomato.interrupt!
-      @storage.write(tomato)
+      @storage.write_tomato(tomato)
     end
 
     # Public: Returns the current config.
@@ -57,6 +57,8 @@ module Tamarillo
       valid_config_options(options).each do |key,value|
         @config.send("#{key}=".to_sym, value)
       end
+
+      @storage.write_config
     end
 
     private

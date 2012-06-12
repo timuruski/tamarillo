@@ -38,21 +38,21 @@ describe Tamarillo::Controller do
 
     it "stores a new tomato" do
       storage.stub(:latest => nil)
-      storage.should_receive(:write)
+      storage.should_receive(:write_tomato)
 
       subject.start_new_tomato
     end
 
     it "does nothing if a tomato is already in progress." do
       storage.stub(:latest => stub)
-      storage.should_not_receive(:write)
+      storage.should_not_receive(:write_tomato)
 
       subject.start_new_tomato
     end
 
     it "uses the configured duration" do
       storage.stub(:latest => nil)
-      storage.stub(:write)
+      storage.stub(:write_tomato)
       Tamarillo::Tomato.should_receive(:new).with(1500, anything)
 
       subject.start_new_tomato
@@ -60,7 +60,7 @@ describe Tamarillo::Controller do
 
     it "uses a current clock" do
       storage.stub(:latest => nil)
-      storage.stub(:write)
+      storage.stub(:write_tomato)
       Tamarillo::Clock.should_receive(:now)
 
       subject.start_new_tomato
@@ -68,7 +68,7 @@ describe Tamarillo::Controller do
 
     it "returns the started tomato" do
       storage.stub(:latest => nil)
-      storage.stub(:write)
+      storage.stub(:write_tomato)
       subject.start_new_tomato.should be_a(Tamarillo::Tomato)
     end
   end
@@ -77,7 +77,7 @@ describe Tamarillo::Controller do
     it "interrupts the current tomato" do
       tomato = double('tomato')
       tomato.should_receive(:interrupt!)
-      storage.stub(:write)
+      storage.stub(:write_tomato)
       storage.should_receive(:latest).and_return(tomato)
 
       subject.interrupt_current_tomato
@@ -93,7 +93,7 @@ describe Tamarillo::Controller do
       tomato = double('tomato')
       tomato.stub(:interrupt!)
       storage.stub(:latest => tomato)
-      storage.should_receive(:write).with(tomato)
+      storage.should_receive(:write_tomato).with(tomato)
 
       subject.interrupt_current_tomato
     end
@@ -106,6 +106,10 @@ describe Tamarillo::Controller do
   end
 
   describe "#update_config" do
+    before do
+      storage.stub(:write_config)
+    end
+
     it "can update the duration" do
       config.should_receive(:duration=).with(10)
       subject.update_config(:duration => 10)
@@ -114,6 +118,11 @@ describe Tamarillo::Controller do
     it "ignores bogus arguments" do
       config.should_not_receive(:foo=).with('bar')
       subject.update_config(:foo => 'bar')
+    end
+
+    it "writes the config" do
+      storage.should_receive(:write_config)
+      subject.update_config
     end
   end
 end

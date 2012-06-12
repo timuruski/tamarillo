@@ -25,12 +25,19 @@ module Tamarillo
       FileUtils.mkdir_p(@path)
     end
 
+    # Public: Write the config to the filesystem.
+    #
+    # Returns the Pathname to the config that was written.
+    def write_config
+      File.open(config_path, 'w') { |f| f << @config.to_yaml }
+    end
+
     # Public: Write a tomato to the filesystem.
     #
     # tomato - A Tomato instance.
     #
     # Returns the Pathname to the tomato that was written.
-    def write(tomato)
+    def write_tomato(tomato)
       tomato_file = TomatoFile.new(tomato)
       tomato_path = @path.join(tomato_file.path)
       FileUtils.mkdir_p(File.dirname(tomato_path))
@@ -44,7 +51,7 @@ module Tamarillo
     # path - A String path to a tomato file.
     #
     # Returns a Tomato instance if found, nil if not found.
-    def read(path)
+    def read_tomato(path)
       return unless File.exist?(path)
 
       data = File.readlines(path)
@@ -66,11 +73,16 @@ module Tamarillo
 
       # XXX tomato_dir.to_s because FakeFS chokes on Pathname.
       if latest_name = Dir.glob(tomato_dir.join('*')).sort.last
-        read(latest_name)
+        read_tomato(latest_name)
       end
     end
 
     private
+
+    # Private: Returns a Pathname to the config.
+    def config_path
+      @path.join('config.yml')
+    end
 
     # Private: Returns a Pathname to the current day.
     def tomato_dir
