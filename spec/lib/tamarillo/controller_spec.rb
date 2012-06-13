@@ -44,7 +44,8 @@ describe Tamarillo::Controller do
     end
 
     it "does nothing if a tomato is already in progress." do
-      storage.stub(:latest => stub)
+      tomato = stub(:active? => true)
+      storage.stub(:latest => tomato)
       storage.should_not_receive(:write_tomato)
 
       subject.start_new_tomato

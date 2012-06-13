@@ -33,7 +33,7 @@ module Tamarillo
     # Public: Starts a new tomato if one is not already running.
     def start_new_tomato
       tomato = @storage.latest
-      return if tomato.active?
+      return if tomato && tomato.active?
       tomato = Tomato.new(@config.duration_in_seconds, Clock.now)
       @storage.write_tomato(tomato)
 
