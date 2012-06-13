@@ -20,7 +20,8 @@ module Tamarillo
     # Public: Formats and returns the status of the current tomato.
     # Returns nil if no tomato is found.
     def status(format)
-      return unless tomato = @storage.latest and tomato.active?
+      tomato = @storage.latest
+      return unless tomato.active?
 
       case format
       when Formats::HUMAN then format_approx_time(tomato.remaining)
@@ -31,7 +32,8 @@ module Tamarillo
 
     # Public: Starts a new tomato if one is not already running.
     def start_new_tomato
-      return if @storage.latest
+      tomato = @storage.latest
+      return if tomato.active?
       tomato = Tomato.new(@config.duration_in_seconds, Clock.now)
       @storage.write_tomato(tomato)
 
