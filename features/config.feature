@@ -30,8 +30,6 @@ Feature: configuration
     """
 
   Scenario: Changing the tomato duration
-    # This works in the app, but not here?
-    Given pending
     Given there is no active tomato
     When I run `tam config duration=5`
     And I run `tam start`
