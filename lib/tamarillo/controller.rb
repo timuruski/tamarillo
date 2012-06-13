@@ -66,7 +66,7 @@ module Tamarillo
     private
 
     def valid_config_options(options)
-      valid_keys = %w[duration]
+      valid_keys = %w[duration notifier]
       options.select { |k,_| valid_keys.include?(k.to_s) }
     end
 

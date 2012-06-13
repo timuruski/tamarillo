@@ -65,16 +65,31 @@ describe Tamarillo::Config do
   end
 
   describe "read from YAML" do
-    it "can read the duration from YAML" do
-      config_path = Pathname.new('spec/support/sample-config.yml')
-      config = Tamarillo::Config.load(config_path)
-      config.duration_in_seconds.should == 30 * 60
+    let(:sample_config_path) { Pathname.new('spec/support/sample-config.yml') }
+    let(:invalid_config_path) { Pathname.new('spec/support/invalid-config.yml') }
+
+    describe "duration value" do
+      it "can read the duration from YAML" do
+        config = Tamarillo::Config.load(sample_config_path)
+        config.duration_in_seconds.should == 30 * 60
+      end
+
+      it "uses the default duration if the YAML is malformed" do
+        config = Tamarillo::Config.load(invalid_config_path)
+        config.duration_in_seconds.should == default_duration * 60
+      end
     end
 
-    it "uses the default duration if the YAML is malformed" do
-      config_path = Pathname.new('spec/support/invalid-config.yml')
-      config = Tamarillo::Config.load(config_path)
-      config.duration_in_seconds.should == default_duration * 60
+    describe "notifier value" do
+      it "can read the notifier from YAML" do
+        config = Tamarillo::Config.load(sample_config_path)
+        config.notifier.should == Tamarillo::Notification::GROWL
+      end
+
+      it "uses the default value if the YAML is malformed" do
+        config = Tamarillo::Config.load(invalid_config_path)
+        config.notifier.should == Tamarillo::Notification::BELL
+      end
     end
 
     it "creates a default config when path is missing" do
@@ -105,6 +120,7 @@ describe Tamarillo::Config do
       yaml.should == <<EOS
 ---
 duration: 25
+notifier: bell
 EOS
     end
   end

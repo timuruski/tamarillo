@@ -66,6 +66,7 @@ module Tamarillo
       if File.exist?(path)
         yaml = YAML.load( File.read(path.to_s) ) || {}
         options[:duration_in_minutes] = yaml['duration']
+        options[:notifier] = yaml['notifier']
       end
 
       new(options)
@@ -80,7 +81,9 @@ module Tamarillo
 
     # Public: Returns config in YAML format.
     def to_yaml
-      options = { 'duration' => duration_in_minutes }
+      options = {
+        'duration' => duration_in_minutes,
+        'notifier' => notifier.to_s }
       YAML.dump(options)
     end
 
