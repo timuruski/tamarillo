@@ -24,7 +24,7 @@ Given /^there is an active tomato$/ do
   clock = Tamarillo::Clock.now
   tomato = Tamarillo::Tomato.new(25 * 60, clock)
   storage = Tamarillo::Storage.new(tamarillo_path)
-  storage.write(tomato)
+  storage.write_tomato(tomato)
 end
 
 Given /^there is a completed tomato$/ do
@@ -33,7 +33,7 @@ Given /^there is a completed tomato$/ do
   clock = Tamarillo::Clock.new(time)
   tomato = Tamarillo::Tomato.new(25 * 60, clock)
   storage = Tamarillo::Storage.new(tamarillo_path)
-  storage.write(tomato)
+  storage.write_tomato(tomato)
 end
 
 
