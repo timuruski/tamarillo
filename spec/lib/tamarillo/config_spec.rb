@@ -58,6 +58,12 @@ describe Tamarillo::Config do
       config.notifier.should == Tamarillo::Notification::GROWL
     end
 
+    it "falls back to the existing value if a new value is invalid" do
+      config = Tamarillo::Config.new(notifier: Tamarillo::Notification::SPEECH)
+      config.notifier = 'bogus'
+      config.notifier.should == Tamarillo::Notification::SPEECH
+    end
+
     it "has a default value" do
       config = Tamarillo::Config.new
       config.notifier.should == Tamarillo::Notification::BELL

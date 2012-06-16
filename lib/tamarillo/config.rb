@@ -48,7 +48,11 @@ module Tamarillo
 
     # Public: Sets the notifier type.
     def notifier=(value)
-      @notifier = Notification.valid!(value)
+      new_value = Notification.valid!(value)
+      new_value ||= @notifier
+      new_value ||= Notification.default
+
+      @notifier = new_value
     end
 
     # Public: Initializes a config from a YAML file.
