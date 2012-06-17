@@ -46,6 +46,13 @@ module Tamarillo
       tomato_path
     end
 
+    # Public: Writes a monitor pid.
+    #
+    # monitor - The monitor to write.
+    def write_monitor(monitor)
+      File.open(monitor_path, 'w') { |f| f << monitor.pid }
+    end
+
     # Public: Read a tomato from the filesystem.
     #
     # path - A String path to a tomato file.
@@ -66,6 +73,18 @@ module Tamarillo
       tomato
     end
 
+    # Public: Returns the pid of monitor.
+    def read_monitor
+      if File.exists?(monitor_path)
+        File.read(monitor_path).to_i
+      end
+    end
+
+    # Public: Removes monitor pid-file.
+    def clear_monitor
+      File.delete(monitor_path) if File.exists?(monitor_path)
+    end
+
     # Public: Returns a Tomato instance if one exists.
     def latest
       return unless File.directory?(tomato_dir)
@@ -82,6 +101,11 @@ module Tamarillo
     # Private: Returns a Pathname to the config.
     def config_path
       @path.join('config.yml')
+    end
+
+    # Private: Returns a Pathmame to the monitor pid.
+    def monitor_path
+      @path.join('monitor.pid')
     end
 
     # Private: Returns a Pathname to the current day.

@@ -77,6 +77,9 @@ EOS
   describe "reading config from the filesystem" do
   end
 
+  describe "reading monitor from the filesystem" do
+  end
+
   describe "writing tomatoes to the filesystem" do
     it "writes files to the right place" do
       FakeFS::FileSystem.clear
