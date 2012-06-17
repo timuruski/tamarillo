@@ -1,3 +1,11 @@
+After do
+  # Kill any forked monitor processes.
+  storage = Tamarillo::Storage.new(tamarillo_path)
+  if monitor_pid = storage.read_monitor
+    Process.kill('QUIT', monitor_pid)
+  end
+end
+
 def tamarillo_path
   Pathname.new("#{current_dir}/tamarillo")
 end
