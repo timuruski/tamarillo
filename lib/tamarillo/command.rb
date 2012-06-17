@@ -5,7 +5,7 @@ module Tamarillo
     DEFAULT_PATH = '~/.tamarillo'
     DEFAULT_COMMAND = 'status'
 
-    VALID_COMMANDS = %w[status config start interrupt]
+    VALID_COMMANDS = %w[status config start stop interrupt]
 
     def initialize
       config = Tamarillo::Config.load(config_path)
@@ -34,6 +34,7 @@ module Tamarillo
     def interrupt(*args)
       @controller.interrupt_current_tomato
     end
+    alias :stop :interrupt
 
     def config(*args)
       params = Hash[args.map { |pair| pair.split('=', 2) }]
