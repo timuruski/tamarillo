@@ -2,20 +2,26 @@ module Tamarillo
   class Monitor
     # The time between checks.
     SLEEP_TIME = 0.3
+    attr_reader :pid
 
     # Public: Initializes a new monitor.
-    def initialize(tomato, &callback)
+    def initialize(tomato, notifier)
       @tomato = tomato
-      @callback = callback
+      @notifier = notifier
     end
 
     # Public: Starts watching a tomato for completion.
     def start
-      until @tomato.completed?
-        sleep SLEEP_TIME
+      @pid = fork do
+        until @tomato.completed?
+          sleep SLEEP_TIME
+        end
+
+        @notifier.call
       end
 
-      @callback.call
+      Process.detach(@pid)
     end
+
   end
 end

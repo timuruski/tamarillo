@@ -34,6 +34,7 @@ describe Tamarillo::Controller do
   describe "#start_new_tomato" do
     before do
       config.stub(:duration_in_seconds => 1500)
+      config.stub(:notifier => nil)
     end
 
     it "stores a new tomato" do
