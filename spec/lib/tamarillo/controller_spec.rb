@@ -35,6 +35,9 @@ describe Tamarillo::Controller do
     before do
       config.stub(:duration_in_seconds => 1500)
       config.stub(:notifier => nil)
+      storage.stub(:write_monitor)
+      # Prevent monitor forking while testing.
+      Tamarillo::Monitor.any_instance.stub(:start)
     end
 
     it "stores a new tomato" do
@@ -76,6 +79,10 @@ describe Tamarillo::Controller do
   end
 
   describe "#interrupt_current_tomato" do
+    before do
+      storage.stub(:read_monitor)
+    end
+
     it "interrupts the current tomato" do
       tomato = double('tomato')
       tomato.should_receive(:interrupt!)

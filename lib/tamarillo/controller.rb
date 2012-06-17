@@ -34,14 +34,18 @@ module Tamarillo
     def start_new_tomato
       tomato = @storage.latest
       return if tomato && tomato.active?
+
       tomato = Tomato.new(@config.duration_in_seconds, Clock.now)
       @storage.write_tomato(tomato)
+      start_monitor(tomato)
 
       tomato
     end
 
     # Public: Interrupts the current tomato if one is running.
     def interrupt_current_tomato
+      stop_monitor
+
       tomato = @storage.latest
       return if tomato.nil?
 
@@ -83,6 +87,25 @@ module Tamarillo
 
     def format_prompt(tomato)
       [format_time(tomato.remaining), tomato.remaining, tomato.duration].join(' ')
+    end
+
+    def start_monitor(tomato)
+      notifier = Notification.for(@config.notifier)
+      monitor = Monitor.new(tomato, notifier)
+      monitor.start
+      @storage.write_monitor(monitor)
+    end
+
+    def stop_monitor
+      if monitor_pid = @storage.read_monitor
+        begin
+          Process.kill('QUIT', monitor_pid)
+        rescue Errno::ESRCH
+          @storage.clear_monitor
+        rescue Errno::EPERM
+          warn "No privilege to kill monitor process."
+        end
+      end
     end
 
   end
