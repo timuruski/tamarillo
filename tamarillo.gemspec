@@ -21,6 +21,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rspec', '~> 2.9.0'
   gem.add_development_dependency 'timecop', '~> 0.3.5'
 
-  gem.add_runtime_dependency 'methadone', '~> 1.0.0.rc5'
+  gem.add_runtime_dependency 'gli', '~> 2.0.0.rc4'
 
 end
