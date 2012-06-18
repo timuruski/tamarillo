@@ -5,7 +5,42 @@ module Tamarillo
     DEFAULT_PATH = '~/.tamarillo'
     DEFAULT_COMMAND = 'status'
 
-    VALID_COMMANDS = %w[status config start stop interrupt]
+    HELP_TEXT = <<-EOS
+Tamarillo v#{VERSION}
+
+Commands:
+
+$ tam status [--prompt]
+
+Displays remainder of current pomodoro, use the prompt switch
+to render a space-separated format for prompt integration. This
+is the default command.
+
+eg. 12:00 720 900
+
+
+$ tam start
+
+Starts a new pomodoro if none in progress.
+
+
+$ tam stop
+$ tam interrupt
+
+Stops the current pomodoro if in progress.
+
+
+$ tam config
+$ tam config [duration=MINUTES]
+$ tam config [notifier=TYPE]
+
+Displays the current configuration, use to change then duration of 
+each pomodoro in minutes or the type of notifier used. 
+
+Notifiers: growl, speech, bell
+EOS
+
+    VALID_COMMANDS = %w[help status config start stop interrupt]
 
     def initialize
       config = Tamarillo::Config.load(config_path)
@@ -16,6 +51,10 @@ module Tamarillo
     def execute(*args)
       command = parse_command_name!(args)
       send(command.to_sym, *args.drop(1))
+    end
+
+    def help(*args)
+      puts HELP_TEXT
     end
 
     def status(*args)
@@ -46,6 +85,7 @@ module Tamarillo
 
     def parse_command_name!(args)
       name = args.first || DEFAULT_COMMAND
+      name = 'help' if name =~ /^(-h|--help)/
       unless VALID_COMMANDS.include?(name)
         puts "Invalid command '#{name}'"
         exit 1
