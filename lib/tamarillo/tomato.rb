@@ -43,8 +43,6 @@ module Tamarillo
 
     # Public: Returns the number of seconds until completion.
     def remaining
-      return 0 if @interrupted
-
       d = @duration - @clock.elapsed
       d > 0 ? d : 0
     end

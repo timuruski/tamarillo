@@ -71,7 +71,7 @@ describe Tomato do
         subject.interrupt!
       end
 
-      its(:remaining) { should == 0 }
+      its(:remaining) { should == 25.minutes }
     end
   end
 
