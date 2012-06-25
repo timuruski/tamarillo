@@ -1,4 +1,64 @@
 #!/usr/bin/env ruby
 
-require 'tamarillo/command'
-Tamarillo::Command.new.execute(*ARGV)
+$: << File.expand_path(File.dirname(File.realpath(__FILE__)) + '/../lib')
+
+gem 'gli', '~>1.6.0'
+require 'gli'
+require 'tamarillo'
+
+# Setup paths
+path = ENV['TAMARILLO_PATH']
+path ||= ENV['HOME'] + '/.tamarillo'
+tamarillo_path = Pathname.new(File.expand_path(path))
+config_path = tamarillo_path.join('config.yml')
+
+# Setup environment
+config = Tamarillo::Config.load(config_path)
+storage = Tamarillo::Storage.new(tamarillo_path, config)
+controller = Tamarillo::Controller.new(config, storage)
+
+include GLI
+
+program_desc "Command line pomodoro timer."
+version Tamarillo::VERSION
+
+desc "Status of the current pomodoro."
+command :status do |c|
+  c.desc 'Format status for display in prompt.'
+  c.switch [:p, :prompt]
+
+  c.action do |global_options, options, args|
+    format = options[:prompt] ? Tamarillo::Formats::PROMPT : Tamarillo::Formats::HUMAN
+    status = controller.status(format)
+    printf "%s\n", status unless status.nil? || status.empty?
+  end
+end
+
+desc "Start a new pomodoro."
+command :start do |c|
+  c.action do |global_options, options, args|
+    if tomato = controller.start_new_tomato
+      printf "Started new pomodoro, about %d minutes.\n", tomato.approx_minutes_remaining
+    end
+  end
+end
+
+desc "Stops the current pomodoro."
+command :stop do |c|
+  c.action do |global_options, options, args|
+    if tomato = controller.interrupt_current_tomato
+      printf "Pomodoro stopped, about %d minutes.\n", tomato.approx_minutes_remaining
+    end
+  end
+end
+
+desc "View and update the configuration."
+command :config do |c|
+  c.action do |global_options, options, args|
+    params = Hash[args.map { |pair| pair.split('=', 2) }]
+    controller.update_config(params)
+    print controller.config.to_yaml
+  end
+end
+
+exit run(ARGV)

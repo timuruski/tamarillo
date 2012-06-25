@@ -2,6 +2,7 @@
 require File.expand_path('../lib/tamarillo/version', __FILE__)
 
 Gem::Specification.new do |gem|
+
   gem.name          = "tamarillo"
   gem.version       = Tamarillo::VERSION
   gem.authors       = ["Tim Uruski"]
@@ -21,6 +22,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rspec', '~> 2.9.0'
   gem.add_development_dependency 'timecop', '~> 0.3.5'
 
-  gem.add_runtime_dependency 'gli', '~> 2.0.0.rc4'
+  gem.add_runtime_dependency 'gli', '~> 1.6.0'
 
 end
