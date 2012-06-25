@@ -85,6 +85,7 @@ describe Tamarillo::Controller do
 
     it "interrupts the current tomato" do
       tomato = double('tomato')
+      tomato.stub(:interrupted?) { false }
       tomato.should_receive(:interrupt!)
       storage.stub(:write_tomato)
       storage.should_receive(:latest).and_return(tomato)
@@ -98,8 +99,16 @@ describe Tamarillo::Controller do
         .should_not raise_error(NoMethodError)
     end
 
+    it "returns nil if the tomato is already interrupted" do
+      tomato = double('tomato')
+      tomato.stub(:interrupted?) { true }
+      storage.stub(:latest => tomato)
+      subject.interrupt_current_tomato.should be_nil
+    end
+
     it "writes the tomato" do
       tomato = double('tomato')
+      tomato.stub(:interrupted?) { false }
       tomato.stub(:interrupt!)
       storage.stub(:latest => tomato)
       storage.should_receive(:write_tomato).with(tomato)
@@ -109,6 +118,7 @@ describe Tamarillo::Controller do
 
     it "returns the interrupted tomato" do
       tomato = double('tomato').as_null_object
+      tomato.stub(:interrupted?) { false }
       storage.stub(:latest => tomato, :write_tomato => nil)
 
       subject.interrupt_current_tomato.should == tomato

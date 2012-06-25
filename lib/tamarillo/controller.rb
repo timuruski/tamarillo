@@ -47,7 +47,7 @@ module Tamarillo
       stop_monitor
 
       tomato = @storage.latest
-      return if tomato.nil?
+      return if tomato.nil? || tomato.interrupted?
 
       tomato.interrupt!
       @storage.write_tomato(tomato)
