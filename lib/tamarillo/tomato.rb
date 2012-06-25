@@ -47,6 +47,12 @@ module Tamarillo
       d > 0 ? d : 0
     end
 
+    # Public: Returns the approximate number of minutes until
+    # completetion.
+    def approx_minutes_remaining
+      (remaining / 60.0).round.to_i
+    end
+
     # Public: Returns the number of seconds elapsed since start.
     def elapsed
       @clock.elapsed

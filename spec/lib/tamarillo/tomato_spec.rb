@@ -73,6 +73,22 @@ describe Tomato do
 
       its(:remaining) { should == 25.minutes }
     end
+
+  end
+
+  describe "approximate time remaining" do
+    let(:clock) { stub(:elapsed => elapsed) }
+    subject { Tomato.new(10.minutes, clock) }
+
+    context "when more than 30 seconds between minutes" do
+      let(:elapsed) { 5.minutes + 10.seconds }
+      its(:approx_minutes_remaining) { should == 5 }
+    end
+
+    context "when less than 30 seconds between minutes" do
+      let(:elapsed) { 5.minutes + 50.seconds }
+      its(:approx_minutes_remaining) { should == 4 }
+    end
   end
 
   describe "states" do
