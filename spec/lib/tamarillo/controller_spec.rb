@@ -106,6 +106,13 @@ describe Tamarillo::Controller do
 
       subject.interrupt_current_tomato
     end
+
+    it "returns the interrupted tomato" do
+      tomato = double('tomato').as_null_object
+      storage.stub(:latest => tomato, :write_tomato => nil)
+
+      subject.interrupt_current_tomato.should == tomato
+    end
   end
 
   describe "#config" do

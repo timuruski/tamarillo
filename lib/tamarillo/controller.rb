@@ -51,6 +51,8 @@ module Tamarillo
 
       tomato.interrupt!
       @storage.write_tomato(tomato)
+
+      tomato
     end
 
     # Public: Returns the current config.
