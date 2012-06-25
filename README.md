@@ -29,55 +29,48 @@ can.
 
 ## Examples
 
-These examples are just thought experiments, this interface has not been
-implemented yet.
-
 ### Starting and stopping a tomato
 
 ```
   $ tam start
-  > tamarillo started
+  > Pomodoro started, about 25 minutes.
 
   $ tam stop
-  > tomato stopped around ~17m
-
-  $ tam pause
-  > tomato paused around ~16m
-
-  $ tam interrupt
-  > tomato interrupted around ~14m
+  > Pomorodo stopped, around 17 minutes.
 ```
 
 ### Status of current tomato
 
 ```
   $ tam status
-  > ~19m # rough time only, don't sweat the seconds
+  > About 19 minutes.
 
-  $ tam
-  > ~19m
-
-  $ tam status --full
-  > active 19:21
+  $ tam status --prompt
+  > 19:21 1161 1500
 ```
 
 ### Configuration
 
 ```
-$ tam config --duration=25
-> tamarillo duration is 25 minutes
+  $ tam config
+  > --
+  > duration: 25
+  > notifier: bell
 
-$ tam config --alert=growl
-> tamarillo will use Growl for notifications
+  $ tam config duration=10
+  > --
+  > duration: 10
+  > notifier: bell
 
-$ tam config --daemon ~/.tamarillo/pid
-> tamarillo will monitor the current tomato from here
+  $ tam config notifier=growl
+  > --
+  > duration: 10
+  > notifier: growl
 ```
 
 
 ## Future ideas
 
 * task management, tomatoes are assigned to a task
-* daemon process for monitoring the current tomato
-* notification helper app for various environments
 * instaweb view of history
+* helpers for shell and prompt integration
