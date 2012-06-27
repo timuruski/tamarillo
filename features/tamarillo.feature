@@ -2,7 +2,7 @@ Feature: tamarillo
 
   Scenario: First usage
     Given there is no active tomato
-    When I run `tam`
+    When I run `tam status`
     Then the exit status should be 0
     Then the output should be empty
 
@@ -10,31 +10,34 @@ Feature: tamarillo
     Given the default configuration
       And there is no active tomato
     When I run `tam start`
-    Then the output should match /About \d+ minutes/
+    Then the output should match /Started new pomodoro, about \d+ minutes/
       And the exit status should be 0
 
   Scenario: Tomato status
     Given there is an active tomato
-    When I run `tam`
+    When I run `tam status`
     Then the output should match /About \d+ minutes/
 
-  Scenario: Interrupting a tomato
+  Scenario: Stopping a tomato
     Given there is an active tomato
-    When I run `tam interrupt`
-    And I run `tam`
-    Then the output should be empty
+    When I run `tam stop`
+    And I run `tam status`
+    Then the output should contain:
+    """
+    Pomodoro stopped
+    """
 
   Scenario: A tomato is completed
     Given there is a completed tomato
-    When I run `tam`
+    When I run `tam status`
     Then the output should be empty
 
   Scenario: Invalid command
     When I run `tam blah`
-    Then the exit status should be 1
+    Then the exit status should be 255
     And the output should contain:
     """
-    Invalid command 'blah'
+    Unknown command 'blah'
     """
 
   Scenario: Tomato status for prompt
