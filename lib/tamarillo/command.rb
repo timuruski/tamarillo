@@ -44,7 +44,7 @@ EOS
 
     def initialize
       config = Tamarillo::Config.load(config_path)
-      storage = Storage.new(tamarillo_path, config)
+      storage = Storage::FileSystem.new(tamarillo_path, config)
       @controller = Controller.new(config, storage)
     end
 

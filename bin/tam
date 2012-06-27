@@ -14,7 +14,7 @@ config_path = tamarillo_path.join('config.yml')
 
 # Setup environment
 config = Tamarillo::Config.load(config_path)
-storage = Tamarillo::Storage.new(tamarillo_path, config)
+storage = Tamarillo::Storage::FileSystem.new(tamarillo_path, config)
 controller = Tamarillo::Controller.new(config, storage)
 
 include GLI

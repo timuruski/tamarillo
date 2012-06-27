@@ -1,10 +1,10 @@
-require_relative '../../../lib/tamarillo/storage'
+require_relative '../../../../lib/tamarillo/storage/file_system'
 require 'fakefs/spec_helpers'
 require 'active_support/core_ext/numeric/time'
 
-include Tamarillo
+include Tamarillo::Storage
 
-# Storage layout looks like this
+# File system storage layout looks like this
 # |,tamarillo
 #   |-config
 #   |-basket.sqlite
@@ -13,7 +13,7 @@ include Tamarillo
 #       |-0401
 #         |-060101
 
-describe Storage do
+describe FileSystem do
   include FakeFS::SpecHelpers
 
   let(:time) { Time.local(2011,1,1,6,0,0) }
@@ -43,10 +43,10 @@ EOS
   end
 
 
-  subject { Storage.new(storage_path) }
+  subject { FileSystem.new(storage_path) }
 
   it "creates the storage directory if it is missing" do
-    expect { Storage.new(storage_path) }.
+    expect { FileSystem.new(storage_path) }.
       to change { File.directory?(storage_path) }
   end
 
@@ -60,7 +60,7 @@ EOS
 
   it "can accept a specific configuration" do
     config = stub(:duration => 10)
-    storage = Storage.new(storage_path, config)
+    storage = FileSystem.new(storage_path, config)
     storage.config.duration.should == 10
   end
 
@@ -99,7 +99,7 @@ EOS
     describe "tomato file" do
       before do
         tomato = stub(:started_at => time, :date => date, :state => :active)
-        Storage.new(storage_path).write_tomato(tomato)
+        FileSystem.new(storage_path).write_tomato(tomato)
       end
 
       subject { FakeFS { File.readlines(tomato_path.to_s) } }
@@ -127,7 +127,7 @@ EOS
 
     describe "the tomato" do
       let(:config) { stub(:duration_in_seconds => 10.minutes) }
-      let(:storage) { Storage.new(storage_path, config) }
+      let(:storage) { FileSystem.new(storage_path, config) }
       subject { storage.read_tomato(tomato_path) }
 
       its(:started_at) { should == time }
@@ -144,7 +144,7 @@ EOS
   end
 
   describe "finding most recent tomato" do
-    subject { Storage.new(storage_path).latest }
+    subject { FileSystem.new(storage_path).latest }
 
     context "when there are many tomatoes" do
       before do
