@@ -8,9 +8,10 @@ describe Tamarillo::Config do
     subject { Tamarillo::Config.new }
     its(:duration_in_minutes) { should == default_duration }
     its(:duration_in_seconds) { should == default_duration * 60 }
+    its(:notifier) { should == Tamarillo::Notification::BELL }
   end
 
-  describe "duration_in_minutes" do
+  describe "#duration_in_minutes" do
     it "can be read" do
       config = Tamarillo::Config.new(duration_in_minutes: 15)
       config.duration_in_minutes.should == 15
@@ -32,7 +33,7 @@ describe Tamarillo::Config do
     end
   end
 
-  describe "duration" do
+  describe "#duration" do
     it "aliases duration_in_minutes" do
       expect { subject.duration = 10 }
         .to change { subject.duration_in_minutes }
@@ -46,7 +47,7 @@ describe Tamarillo::Config do
     end
   end
 
-  describe "notifier" do
+  describe "#notifier" do
     it "can be read" do
       config = Tamarillo::Config.new(notifier: Tamarillo::Notification::SPEECH)
       config.notifier.should == Tamarillo::Notification::SPEECH
