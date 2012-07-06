@@ -20,7 +20,6 @@ describe Tamarillo::Config2 do
 
       specify { attributes['duration'].should == (25 * 60) }
       specify { attributes['notifier'].should == 'bell' }
-
     end
 
     context "existing config file" do
@@ -28,7 +27,21 @@ describe Tamarillo::Config2 do
 
       specify { attributes['duration'].should == (9 * 60) }
       specify { attributes['notifier'].should == 'growl' }
+    end
 
+    context "empty config file" do
+      before do
+        File.open(config_path, 'w') do; end
+      end
+
+      after do
+        File.delete(config_path) if File.exist?(config_path)
+      end
+
+      let(:config_path) { Pathname.new('spec/support/empty_file') }
+
+      specify { attributes['duration'].should == (25 * 60) }
+      specify { attributes['notifier'].should == 'bell' }
     end
 
   end

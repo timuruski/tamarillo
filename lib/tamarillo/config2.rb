@@ -15,11 +15,16 @@ module Tamarillo
     attr_accessor :attributes
 
     # Public: Initialize a new config object.
-    def initialize(path = DEFAULT_PATH)
+    def initialize(path)
       @path = path
 
-      create_default unless File.exist?(@path)
+      default_attributes unless valid_file?
       load_attributes
+    end
+
+    # Public: Writes attributes to JSON file.
+    def save
+      write(@attributes)
     end
     
     private
@@ -31,17 +36,27 @@ module Tamarillo
     end
 
     # Internal: Generates a default config file.
-    def create_default
+    def default_attributes
       attributes = {
         'duration' => DEFAULT_DURATION,
-        'notifier' => DEFAULT_NOTIFIER}
+        'notifier' => DEFAULT_NOTIFIER }
 
+      write(attributes)
+    end
+
+    # Internal: Writes an attributes hash to the config path.
+    def write(attributes)
       dir_path = File.dirname(@path)
       FileUtils.mkdir_p(dir_path)
 
       File.open(@path, 'w') do |f|
         f << JSON.generate(attributes)
       end
+    end
+
+    # Internal: Returns true if the config file exists.
+    def valid_file?
+      File.size?(@path)
     end
 
   end
