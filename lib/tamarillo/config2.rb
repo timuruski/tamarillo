@@ -9,10 +9,8 @@ module Tamarillo
   class Config2
 
     DEFAULT_PATH = "#{ENV['HOME']}/.tamarillo/config.json"
-    DEFAULT_DURATION = (25 * 60)
+    DEFAULT_DURATION = 25 # minutes
     DEFAULT_NOTIFIER = 'bell'
-    
-    attr_accessor :attributes
 
     # Public: Initialize a new config object.
     def initialize(path)
@@ -22,13 +20,27 @@ module Tamarillo
       load_attributes
     end
 
+    # Public: Returns the attributes hash.
+    def attributes
+      @attributes
+    end
+
+    # Public: Sets the attributes hash, 
+    # while coercing value types and injecting defaults.
+    def attributes=(hash)
+      hash = coerce_values(hash)
+      hash = remove_invalid(hash)
+      hash = inject_defaults(hash)
+      @attributes = hash
+    end
+
     # Public: Writes attributes to JSON file.
     def save
       write(@attributes)
     end
-    
+
     private
-    
+
     # Internal: Reads a config file and loads the attributes.
     def load_attributes
       data = File.read(@path)
@@ -37,11 +49,50 @@ module Tamarillo
 
     # Internal: Generates a default config file.
     def default_attributes
-      attributes = {
+      attributes = inject_defaults({})
+      write(attributes)
+    end
+
+    # Internal: Coerces specific attributes to the correct type.
+    def coerce_values(attributes)
+      coercions = {
+        'duration' => :to_i,
+        'notifier' => :to_s }
+
+      coercions.each do |key, method|
+        if attributes.key?(key)
+          value = attributes[key]
+          value = value.send(method) rescue value
+          attributes[key] = value
+        end
+      end
+
+      attributes
+    end
+
+    # Internal: Removes invalid attributes.
+    def remove_invalid(attributes)
+      invalid_values = {
+        'duration' => 0,
+        'notifier' => '' }
+
+      invalid_values.each do |key, invalid_value|
+        if attributes.key?(key)
+          value = attributes[key]
+          attributes.delete(key) if value == invalid_value
+        end
+      end
+
+      attributes
+    end
+    
+    # Internal: Injects default values missing from attributes hash.
+    def inject_defaults(attributes)
+      defaults = {
         'duration' => DEFAULT_DURATION,
         'notifier' => DEFAULT_NOTIFIER }
 
-      write(attributes)
+      defaults.merge(attributes)
     end
 
     # Internal: Writes an attributes hash to the config path.
