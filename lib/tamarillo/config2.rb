@@ -25,8 +25,8 @@ module Tamarillo
       @attributes
     end
 
-    # Public: Sets the attributes hash, 
-    # while coercing value types and injecting defaults.
+    # Public: Sets the attributes hash, while coercing
+    # value types and injecting defaults.
     def attributes=(hash)
       hash = coerce_values(hash)
       hash = remove_invalid(hash)
@@ -85,7 +85,7 @@ module Tamarillo
 
       attributes
     end
-    
+
     # Internal: Injects default values missing from attributes hash.
     def inject_defaults(attributes)
       defaults = {

@@ -35,7 +35,8 @@ module Tamarillo
       tomato = @storage.latest
       return if tomato && tomato.active?
 
-      tomato = Tomato.new(@config.duration_in_seconds, Clock.now)
+      duration = @config.attributes['duration'] * 60
+      tomato = Tomato.new(duration, Clock.now)
       @storage.write_tomato(tomato)
       start_monitor(tomato)
 
@@ -61,12 +62,11 @@ module Tamarillo
     end
 
     # Public: Updates the current config.
-    def update_config(options = {})
-      valid_config_options(options).each do |key,value|
-        @config.send("#{key}=".to_sym, value)
-      end
-
-      @storage.write_config
+    def update_config(attributes = {})
+      current_attrs = @config.attributes
+      new_attrs = current_attrs.merge!(attributes)
+      @config.attributes = new_attrs
+      @config.save
     end
 
     private
@@ -92,22 +92,11 @@ module Tamarillo
     end
 
     def start_monitor(tomato)
-      notifier = Notification.for(@config.notifier)
-      monitor = Monitor.new(tomato, notifier)
-      monitor.start
-      @storage.write_monitor(monitor)
+      Monitor.start(tomato, @config)
     end
 
     def stop_monitor
-      if monitor_pid = @storage.read_monitor
-        begin
-          Process.kill('QUIT', monitor_pid)
-        rescue Errno::ESRCH
-          @storage.clear_monitor
-        rescue Errno::EPERM
-          warn "No privilege to kill monitor process."
-        end
-      end
+      Monitor.stop
     end
 
   end

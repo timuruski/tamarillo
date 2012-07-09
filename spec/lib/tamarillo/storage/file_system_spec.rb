@@ -18,8 +18,8 @@ describe FileSystem do
 
   let(:time) { Time.local(2011,1,1,6,0,0) }
   let(:date) { Date.new(2011,1,1) }
+  let(:config) { stub(:attributes => { 'duration' => 10.minutes }) }
   let(:storage_path) { Pathname.new( File.expand_path('tmp/tamarillo')) }
-  let(:config_path) { storage_path.join('config.yml') }
   let(:tomato_path) { storage_path.join('2011/0101/20110101060000') }
   let(:sample_tomato) { <<EOS }
 #{time.iso8601}
@@ -43,41 +43,15 @@ EOS
   end
 
 
-  subject { FileSystem.new(storage_path) }
+  subject { FileSystem.new(storage_path, config) }
 
   it "creates the storage directory if it is missing" do
-    expect { FileSystem.new(storage_path) }.
+    expect { FileSystem.new(storage_path, config) }.
       to change { File.directory?(storage_path) }
   end
 
   it "has a path to the storage directory" do
     subject.path.should == storage_path
-  end
-
-  it "has a default configuration" do
-    subject.config.should be_a(Tamarillo::Config)
-  end
-
-  it "can accept a specific configuration" do
-    config = stub(:duration => 10)
-    storage = FileSystem.new(storage_path, config)
-    storage.config.duration.should == 10
-  end
-
-  describe "writing config to the filesystem" do
-    it "writes files to the right place" do
-      FakeFS::FileSystem.clear
-      FakeFS do
-        expect { subject.write_config }.
-          to change { File.exist?(config_path) }
-      end
-    end
-  end
-
-  describe "reading config from the filesystem" do
-  end
-
-  describe "reading monitor from the filesystem" do
   end
 
   describe "writing tomatoes to the filesystem" do
@@ -99,7 +73,7 @@ EOS
     describe "tomato file" do
       before do
         tomato = stub(:started_at => time, :date => date, :state => :active)
-        FileSystem.new(storage_path).write_tomato(tomato)
+        FileSystem.new(storage_path, config).write_tomato(tomato)
       end
 
       subject { FakeFS { File.readlines(tomato_path.to_s) } }
@@ -126,13 +100,13 @@ EOS
     end
 
     describe "the tomato" do
-      let(:config) { stub(:duration_in_seconds => 10.minutes) }
+      let(:config) { stub(:attributes => { 'duration' => 10 }) }
       let(:storage) { FileSystem.new(storage_path, config) }
       subject { storage.read_tomato(tomato_path) }
 
       its(:started_at) { should == time }
       its(:date) { should == date }
-      its(:duration) { should == 10.minutes }
+      its(:duration) { should == 600 }
       it { should be_completed }
     end
 
@@ -144,7 +118,7 @@ EOS
   end
 
   describe "finding most recent tomato" do
-    subject { FileSystem.new(storage_path).latest }
+    subject { FileSystem.new(storage_path, config).latest }
 
     context "when there are many tomatoes" do
       before do

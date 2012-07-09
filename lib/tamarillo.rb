@@ -1,5 +1,6 @@
 require 'tamarillo/version'
 require 'tamarillo/config'
+require 'tamarillo/config2'
 require 'tamarillo/controller'
 require 'tamarillo/notification'
 require 'tamarillo/monitor'

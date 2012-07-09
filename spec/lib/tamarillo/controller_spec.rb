@@ -1,7 +1,8 @@
 require_relative '../../../lib/tamarillo/controller'
 
 describe Tamarillo::Controller do
-  let(:config) { double('config') }
+  let(:attributes) { {} }
+  let(:config) { double('config', :attributes => attributes) }
   let(:storage) { double('storage') }
 
   subject { Tamarillo::Controller.new(config, storage) }
@@ -27,14 +28,15 @@ describe Tamarillo::Controller do
 
     it "returns nil if no active tomato" do
       tomato.stub(:active?) { false }
-      subject.status(Tamarillo::Formats::HUMAN).should be_nil
+      subject.status(Tamarillo::Formats::HUMAN).should == 'No pomodoro in progress.'
     end
   end
 
   describe "#start_new_tomato" do
+    let(:attributes) { { 'duration' => 25, 'notifier' => nil } }
     before do
-      config.stub(:duration_in_seconds => 1500)
-      config.stub(:notifier => nil)
+      # config.stub(:duration_in_seconds => 1500)
+      # config.stub(:notifier => nil)
       storage.stub(:write_monitor)
       # Prevent monitor forking while testing.
       Tamarillo::Monitor.any_instance.stub(:start)
@@ -133,21 +135,18 @@ describe Tamarillo::Controller do
 
   describe "#update_config" do
     before do
+      config.stub(:attributes=)
+      config.stub(:save)
       storage.stub(:write_config)
     end
 
     it "can update the duration" do
-      config.should_receive(:duration=).with(10)
-      subject.update_config(:duration => 10)
-    end
-
-    it "ignores bogus arguments" do
-      config.should_not_receive(:foo=).with('bar')
-      subject.update_config(:foo => 'bar')
+      config.should_receive(:attributes=).with({'duration' => 10})
+      subject.update_config('duration' => 10)
     end
 
     it "writes the config" do
-      storage.should_receive(:write_config)
+      config.should_receive(:save)
       subject.update_config
     end
   end

@@ -24,8 +24,8 @@ module Tamarillo
 
       # Public: Removes stale pid-file if one exists.
       def cleanup
-        monitor = new
-        monitor.cleanup
+        return unless File.exist?(pid_file_path)
+        File.delete(pid_file_path)
       end
 
       # Public: Resolves the path to the monitor pid file.
@@ -72,7 +72,7 @@ module Tamarillo
 
       cleanup
     end
-    
+
     # Public: Returns the pid-file if it exists.
     def pid
       @pid ||= begin
@@ -107,9 +107,7 @@ module Tamarillo
 
     # Internal: Cleans up pid-file.
     def cleanup
-      return unless File.exist?(Monitor.pid_file_path)
-
-      File.delete(Monitor.pid_file_path)
+      Monitor.cleanup
     end
 
   end

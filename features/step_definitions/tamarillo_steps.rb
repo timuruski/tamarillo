@@ -1,13 +1,15 @@
 After do
   # Kill any forked monitor processes.
-  storage = Tamarillo::Storage::FileSystem.new(tamarillo_path)
-  if monitor_pid = storage.read_monitor
-    Process.kill('QUIT', monitor_pid)
-  end
+  Tamarillo::Monitor.stop
+  Tamarillo::Monitor.cleanup
 end
 
 def tamarillo_path
   Pathname.new("#{current_dir}/tamarillo")
+end
+
+def default_config
+  Tamarillo::Config2.new(tamarillo_path.join('config.json'))
 end
 
 def clear_tomatoes
@@ -20,8 +22,7 @@ def clear_tomatoes
 end
 
 Given /^the default configuration$/ do
-  Tamarillo::Storage::FileSystem.new(tamarillo_path)
-  Tamarillo::Config.new.write(tamarillo_path.join('config.yml'))
+  Tamarillo::Storage::FileSystem.new(tamarillo_path, default_config)
 end
 
 Given /^there is no active tomato$/ do
@@ -31,7 +32,7 @@ end
 Given /^there is an active tomato$/ do
   clock = Tamarillo::Clock.now
   tomato = Tamarillo::Tomato.new(25 * 60, clock)
-  storage = Tamarillo::Storage::FileSystem.new(tamarillo_path)
+  storage = Tamarillo::Storage::FileSystem.new(tamarillo_path, default_config)
   storage.write_tomato(tomato)
 end
 
@@ -40,7 +41,7 @@ Given /^there is a completed tomato$/ do
   time = Time.now - (25 * 60)
   clock = Tamarillo::Clock.new(time)
   tomato = Tamarillo::Tomato.new(25 * 60, clock)
-  storage = Tamarillo::Storage::FileSystem.new(tamarillo_path)
+  storage = Tamarillo::Storage::FileSystem.new(tamarillo_path, default_config)
   storage.write_tomato(tomato)
 end
 
