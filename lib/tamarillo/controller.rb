@@ -21,7 +21,7 @@ module Tamarillo
     # Returns nil if no tomato is found.
     def status(format)
       tomato = @storage.latest
-      return unless tomato && tomato.active?
+      return 'No pomodoro in progress.' unless tomato && tomato.active?
 
       case format
       when Formats::HUMAN then format_approx_time(tomato.remaining)

@@ -4,7 +4,10 @@ Feature: tamarillo
     Given there is no active tomato
     When I run `tam status`
     Then the exit status should be 0
-    Then the output should be empty
+    Then the output should contain:
+    """
+    No pomodoro in progress.
+    """
 
   Scenario: Starting a tomato
     Given the default configuration
@@ -30,7 +33,10 @@ Feature: tamarillo
   Scenario: A tomato is completed
     Given there is a completed tomato
     When I run `tam status`
-    Then the output should be empty
+    Then the output should contain:
+    """
+    No pomodoro in progress.
+    """
 
   Scenario: Invalid command
     When I run `tam blah`
