@@ -1,5 +1,5 @@
 require 'active_support/core_ext/numeric/time'
-require_relative '../../../lib/tamarillo/config'
+require 'tamarillo/config'
 
 describe Tamarillo::Config do
   let(:default_duration) { Tamarillo::Config::DEFAULT_DURATION_IN_MINUTES }

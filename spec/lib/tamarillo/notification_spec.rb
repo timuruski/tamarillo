@@ -1,4 +1,4 @@
-require_relative '../../../lib/tamarillo/notification'
+require 'tamarillo/notification'
 
 include Tamarillo
 

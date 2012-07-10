@@ -1,4 +1,4 @@
-require_relative '../../../../lib/tamarillo/notification/speech'
+require 'tamarillo/notification/speech'
 
 describe Tamarillo::Notification::Speech do
   subject { Tamarillo::Notification::Speech.new }

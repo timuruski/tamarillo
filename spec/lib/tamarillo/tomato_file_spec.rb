@@ -1,5 +1,5 @@
-require_relative '../../../lib/tamarillo/tomato_file'
-require_relative '../../../lib/tamarillo/tomato'
+require 'tamarillo/tomato_file'
+require 'tamarillo/tomato'
 
 describe Tamarillo::TomatoFile do
   # FIXME Timezones will change when running test, argh

@@ -1,4 +1,4 @@
-require_relative '../../../lib/tamarillo/monitor'
+require 'tamarillo/monitor'
 
 describe Tamarillo::Monitor do
   let(:tomato) do

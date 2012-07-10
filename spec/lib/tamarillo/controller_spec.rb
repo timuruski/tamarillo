@@ -1,4 +1,4 @@
-require_relative '../../../lib/tamarillo/controller'
+require 'tamarillo/controller'
 
 describe Tamarillo::Controller do
   let(:attributes) { {} }

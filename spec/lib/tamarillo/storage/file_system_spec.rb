@@ -1,4 +1,4 @@
-require_relative '../../../../lib/tamarillo/storage/file_system'
+require 'tamarillo/storage/file_system'
 require 'fakefs/spec_helpers'
 require 'active_support/core_ext/numeric/time'
 
