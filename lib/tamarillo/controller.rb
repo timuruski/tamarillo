@@ -36,7 +36,7 @@ module Tamarillo
       return if tomato && tomato.active?
 
       duration = @config.attributes['duration'] * 60
-      tomato = Tomato2.new(Time.now, duration)
+      tomato = Tomato.new(Time.now, duration)
       @storage.write_tomato(tomato)
       start_monitor(tomato)
 

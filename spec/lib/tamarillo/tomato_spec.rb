@@ -1,20 +1,19 @@
 require 'active_support/core_ext/numeric/time'
-require_relative '../../../lib/tamarillo/tomato'
+require 'tamarillo/tomato'
 
 include Tamarillo
 
 describe Tomato do
-  subject { Tomato.new(25.minutes, clock) }
+  let(:now) { Time.new(2012,1,1,6,0,0) }
+  subject { Tomato.new(now, 25.minutes, clock) }
 
   describe "basic attibutes" do
-    let(:now) { Time.new(2012,1,1,6,0,0) }
-    let(:today) { Date.new(2012,1,1) }
-    let(:clock) { stub(:start_time => now, :start_date => today, :elapsed => 60) }
+    let(:clock) { stub(now: now + 5.minutes) }
 
     its(:duration) { should == 25.minutes }
     its(:started_at) { should == now }
-    its(:date) { should == today }
-    its(:elapsed) { should == clock.elapsed }
+    its(:date) { should == Date.new(2012,1,1) }
+    its(:elapsed) { should == 5.minutes }
 
     it "update the duration" do
       subject.duration = 5.minutes
@@ -24,26 +23,28 @@ describe Tomato do
 
   describe "comparison" do
     it "is the same if the start-times match" do
-      clock = stub(:start_time => Time.new)
-      tomato_a = Tomato.new(25.minutes, clock)
-      tomato_b = Tomato.new(25.minutes, clock)
+      time_a = Time.new(2012,1,1,6,0,0)
+      time_b = Time.new(2012,1,1,6,0,0)
+
+      tomato_a = Tomato.new(time_a, 25.minutes)
+      tomato_b = Tomato.new(time_b, 25.minutes)
 
       tomato_a.should eql(tomato_b)
     end
 
-    # FIXME This ensures two tomatoes from the same
-    # time cannot co-exist, but it seems confusing
-    it "is the same if the duration differs" do
-      clock = stub(:start_time => Time.new)
-      tomato_a = Tomato.new(10.minutes, clock)
-      tomato_b = Tomato.new(20.minutes, clock)
+    it "is not the same if the duration differs" do
+      time_a = Time.new(2012,1,1,6,0,0)
+      time_b = Time.new(2012,1,1,6,0,0)
 
-      tomato_a.should eql(tomato_b)
+      tomato_a = Tomato.new(time_a, 15.minutes)
+      tomato_b = Tomato.new(time_b, 25.minutes)
+
+      tomato_a.should_not eql(tomato_b)
     end
   end
 
   describe "remaining time" do
-    let(:clock) { stub(:elapsed => elapsed) }
+    let(:clock) { stub(now: now + elapsed) }
     let(:elapsed) { 0 }
 
     context "when no time has elapsed" do
@@ -77,8 +78,8 @@ describe Tomato do
   end
 
   describe "approximate time remaining" do
-    let(:clock) { stub(:elapsed => elapsed) }
-    subject { Tomato.new(10.minutes, clock) }
+    let(:clock) { stub(now: now + elapsed) }
+    subject { Tomato.new(now, 10.minutes, clock) }
 
     context "when more than 30 seconds between minutes" do
       let(:elapsed) { 5.minutes + 10.seconds }
@@ -92,7 +93,7 @@ describe Tomato do
   end
 
   describe "states" do
-    let(:clock) { stub(:elapsed => elapsed) }
+    let(:clock) { stub(now: now + elapsed) }
     let(:elapsed) { 0 }
 
     context "when just started" do
@@ -126,7 +127,5 @@ describe Tomato do
     end
 
   end
-
-  # it "can be distracted" ??
 
 end

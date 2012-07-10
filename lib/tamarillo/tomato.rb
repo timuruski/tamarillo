@@ -16,34 +16,33 @@ module Tamarillo
     # Public: Gets/Sets the length of the tomato in seconds.
     attr_accessor :duration
 
+    # Public: Returns the start time.
+    attr_reader :started_at
+
     # Public: Initializes a new Tomato.
     #
     # duration - The length of the Tomato in seconds.
     # clock    - A Clock instance to keep track of elapsed time.
-    def initialize(duration, clock)
+    def initialize(started_at, duration, clock = Time)
+      @started_at = started_at
       @duration = duration
       @clock = clock
     end
 
-    # Public: Returns the starting Time of the Tomato.
-    def started_at
-      @clock.start_time
-    end
-
     # Public: Returns the Date the Tomato was started on.
     def date
-      @clock.start_date
+      @started_at.to_date
     end
 
     # Public: Returns true if two Tomatoes share a start Time.
     def eql?(other)
-      other.started_at == started_at ||
-      super(other)
+      other.started_at == started_at &&
+      other.duration == duration
     end
 
     # Public: Returns the number of seconds until completion.
     def remaining
-      d = @duration - @clock.elapsed
+      d = @duration - elapsed
       d > 0 ? d : 0
     end
 
@@ -94,6 +93,13 @@ module Tamarillo
       else
         States::ACTIVE
       end
+    end
+
+    protected
+
+    # Internal: Returns the numbers of seconds since the start_time
+    def elapsed
+      @clock.now.to_i - @started_at.to_i
     end
 
   end
