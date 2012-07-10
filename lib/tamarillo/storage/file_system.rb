@@ -1,4 +1,3 @@
-require 'tamarillo/clock'
 require 'tamarillo/config'
 require 'tamarillo/tomato'
 require 'tamarillo/tomato_file'
@@ -52,7 +51,6 @@ module Tamarillo
         start_time = Time.iso8601(data[0]).localtime
         state = data[2]
 
-        clock = Clock.new(start_time)
         duration = config.attributes['duration'] * 60
         tomato = Tomato.new(start_time, duration)
         tomato.interrupt! if state == 'interrupted'

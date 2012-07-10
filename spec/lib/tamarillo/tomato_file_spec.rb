@@ -1,6 +1,5 @@
 require_relative '../../../lib/tamarillo/tomato_file'
 require_relative '../../../lib/tamarillo/tomato'
-require_relative '../../../lib/tamarillo/clock'
 
 describe Tamarillo::TomatoFile do
   # FIXME Timezones will change when running test, argh
