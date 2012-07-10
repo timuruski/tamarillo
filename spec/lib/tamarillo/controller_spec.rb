@@ -60,7 +60,7 @@ describe Tamarillo::Controller do
     it "uses the configured duration" do
       storage.stub(:latest => nil)
       storage.stub(:write_tomato)
-      Tamarillo::Tomato.should_receive(:new).with(1500, anything)
+      Tamarillo::Tomato2.should_receive(:new).with(anything, 1500)
 
       subject.start_new_tomato
     end
@@ -68,7 +68,7 @@ describe Tamarillo::Controller do
     it "uses a current clock" do
       storage.stub(:latest => nil)
       storage.stub(:write_tomato)
-      Tamarillo::Clock.should_receive(:now)
+      Time.should_receive(:now)
 
       subject.start_new_tomato
     end
@@ -76,7 +76,7 @@ describe Tamarillo::Controller do
     it "returns the started tomato" do
       storage.stub(:latest => nil)
       storage.stub(:write_tomato)
-      subject.start_new_tomato.should be_a(Tamarillo::Tomato)
+      subject.start_new_tomato.should be_a(Tamarillo::Tomato2)
     end
   end
 

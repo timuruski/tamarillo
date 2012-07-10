@@ -1,13 +1,11 @@
 require_relative '../../../lib/tamarillo/tomato_file'
-require_relative '../../../lib/tamarillo/tomato'
+require_relative '../../../lib/tamarillo/tomato2'
 require_relative '../../../lib/tamarillo/clock'
 
 describe Tamarillo::TomatoFile do
   # FIXME Timezones will change when running test, argh
   let(:time) { Time.local(2011,1,1, 6,0,0) }
-  let(:today) { Date.new(2011,1,1) }
-  let(:clock) { Tamarillo::Clock.new(time) }
-  let(:tomato) { Tamarillo::Tomato.new(25 * 60, clock) }
+  let(:tomato) { Tamarillo::Tomato2.new(time, 25 * 60) }
 
   subject { Tamarillo::TomatoFile.new(tomato) }
 

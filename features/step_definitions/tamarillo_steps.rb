@@ -30,8 +30,7 @@ Given /^there is no active tomato$/ do
 end
 
 Given /^there is an active tomato$/ do
-  clock = Tamarillo::Clock.now
-  tomato = Tamarillo::Tomato.new(25 * 60, clock)
+  tomato = Tamarillo::Tomato2.new(Time.now, 25 * 60)
   storage = Tamarillo::Storage::FileSystem.new(tamarillo_path, default_config)
   storage.write_tomato(tomato)
 end
@@ -39,8 +38,7 @@ end
 Given /^there is a completed tomato$/ do
   clear_tomatoes
   time = Time.now - (25 * 60)
-  clock = Tamarillo::Clock.new(time)
-  tomato = Tamarillo::Tomato.new(25 * 60, clock)
+  tomato = Tamarillo::Tomato2.new(time, 25 * 60)
   storage = Tamarillo::Storage::FileSystem.new(tamarillo_path, default_config)
   storage.write_tomato(tomato)
 end

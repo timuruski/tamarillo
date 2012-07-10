@@ -54,7 +54,7 @@ module Tamarillo
 
         clock = Clock.new(start_time)
         duration = config.attributes['duration'] * 60
-        tomato = Tomato.new(duration, clock)
+        tomato = Tomato2.new(start_time, duration)
         tomato.interrupt! if state == 'interrupted'
 
         tomato
