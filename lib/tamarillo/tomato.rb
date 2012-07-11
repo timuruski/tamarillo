@@ -35,7 +35,15 @@ module Tamarillo
       @started_at.to_date
     end
 
-    # Public: Returns true if two Tomatoes share a start Time.
+    # Public: Returns true if two Tomatoes have the same
+    # start time and duration
+    def ==(other)
+      other.started_at == started_at &&
+      other.duration == duration
+    end
+
+    # Public: Returns true if two Tomatoes have the same
+    # start time and duration
     def eql?(other)
       other.started_at == started_at &&
       other.duration == duration
@@ -107,6 +115,7 @@ module Tamarillo
     def self.restore(attrs, clock = Time)
       started_at = attrs['started_at']
       duration = attrs['duration']
+      raise TomatoNotValid if started_at.nil? || duration.nil?
 
       tomato = new(started_at, duration, clock)
       tomato.interrupt! if attrs['interrupted']
@@ -121,4 +130,8 @@ module Tamarillo
     end
 
   end
+
+  # Public: Raised when a Tomato cannot be restored from 
+  # a hash of attributes.
+  class TomatoNotValid < StandardError; end
 end

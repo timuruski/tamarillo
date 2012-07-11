@@ -136,13 +136,29 @@ describe Tomato do
   end
 
   describe ".restore" do
-    context "with good params" do
-      let(:params) { { 'duration' => 25.minutes, 'started_at' => now, 'interrupted' => true } }
-      subject { Tomato.restore(params, clock) }
+    context "with good attributes" do
+      let(:attrs) { { 'duration' => 25.minutes, 'started_at' => now, 'interrupted' => true } }
+      subject { Tomato.restore(attrs, clock) }
 
       its(:duration) { should == 25.minutes }
       its(:started_at) { should == now }
       its(:state) { should == Tomato::States::INTERRUPTED }
+    end
+
+    context "with bad attributes" do
+      it "raises an error" do
+        expect {
+          Tomato.restore({})
+        }.to raise_error(Tamarillo::TomatoNotValid)
+      end
+    end
+
+    context "with a dumped tomato" do
+      let(:attrs) { subject.dump }
+
+      it "yields the equivalent tomato" do
+        subject.should == Tomato.restore(attrs, clock)
+      end
     end
   end
 
