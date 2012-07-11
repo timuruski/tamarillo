@@ -5,6 +5,7 @@ include Tamarillo
 
 describe Tomato do
   let(:now) { Time.new(2012,1,1,6,0,0) }
+  let(:clock) { stub(now: now) }
   subject { Tomato.new(now, 25.minutes, clock) }
 
   describe "basic attibutes" do
@@ -126,6 +127,23 @@ describe Tomato do
       it { should_not be_completed }
     end
 
+  end
+
+  describe "#dump" do
+    specify { subject.dump['duration'].should == 25.minutes }
+    specify { subject.dump['started_at'].should == now }
+    specify { subject.dump['interrupted'].should == false }
+  end
+
+  describe ".restore" do
+    context "with good params" do
+      let(:params) { { 'duration' => 25.minutes, 'started_at' => now, 'interrupted' => true } }
+      subject { Tomato.restore(params, clock) }
+
+      its(:duration) { should == 25.minutes }
+      its(:started_at) { should == now }
+      its(:state) { should == Tomato::States::INTERRUPTED }
+    end
   end
 
 end

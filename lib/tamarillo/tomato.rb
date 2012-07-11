@@ -27,6 +27,7 @@ module Tamarillo
       @started_at = started_at
       @duration = duration
       @clock = clock
+      @interrupted = false
     end
 
     # Public: Returns the Date the Tomato was started on.
@@ -93,6 +94,23 @@ module Tamarillo
       else
         States::ACTIVE
       end
+    end
+
+    # Public: Returns an attributes hash suitable for persistence.
+    def dump
+      { 'started_at' => @started_at,
+        'duration' => @duration,
+        'interrupted' => @interrupted }
+    end
+
+    # Public: Restores a Tomato from a persisted hash.
+    def self.restore(attrs, clock = Time)
+      started_at = attrs['started_at']
+      duration = attrs['duration']
+
+      tomato = new(started_at, duration, clock)
+      tomato.interrupt! if attrs['interrupted']
+      tomato
     end
 
     protected
