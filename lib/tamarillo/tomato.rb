@@ -6,6 +6,8 @@ module Tamarillo
   # A Tomato is a 'pomodoro', it keeps track of the amount of time you
   # have focused on a single task. It can be interrupted or completed.
   class Tomato
+    include Comparable
+
     # Internal: A set of valid states a Tomato can be in.
     module States
       ACTIVE = :active.freeze
@@ -40,6 +42,11 @@ module Tamarillo
     def ==(other)
       other.started_at == started_at &&
       other.duration == duration
+    end
+
+    # Public: Compares to another tomato.
+    def <=>(other)
+      @started_at <=> other.started_at
     end
 
     # Public: Returns true if two Tomatoes have the same
@@ -131,7 +138,7 @@ module Tamarillo
 
   end
 
-  # Public: Raised when a Tomato cannot be restored from 
+  # Public: Raised when a Tomato cannot be restored from
   # a hash of attributes.
   class TomatoNotValid < StandardError; end
 end

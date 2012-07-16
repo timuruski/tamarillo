@@ -42,6 +42,19 @@ describe Tomato do
 
       tomato_a.should_not eql(tomato_b)
     end
+
+    it "can order tomatoes correctly" do
+      time_a = Time.new(2012,1,1,6,0,0)
+      time_b = Time.new(2012,1,1,7,0,0)
+      time_c = Time.new(2012,1,1,8,0,0)
+
+      tomato_a = Tomato.new(time_a, 10.minutes)
+      tomato_b = Tomato.new(time_b, 10.minutes)
+      tomato_c = Tomato.new(time_c, 10.minutes)
+
+      tomato_a.should < tomato_b
+      tomato_c.should > tomato_b
+    end
   end
 
   describe "remaining time" do
