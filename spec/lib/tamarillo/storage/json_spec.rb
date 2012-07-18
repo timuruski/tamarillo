@@ -1,3 +1,4 @@
+require 'json'
 require 'tamarillo/storage/json'
 require 'tamarillo/tomato'
 
@@ -18,13 +19,21 @@ describe Tamarillo::Storage::JSON do
     subject { Tamarillo::Storage::JSON.new(params) }
 
     context "when storage file exists" do
-      let(:params) { { 'path' => 'spec/support/sample_tomatoes.json' } }
+      let(:storage_path) { 'spec/support/sample_tomatoes.json' }
+      let(:params) { { 'path' => storage_path } }
 
-      # before do
-      #   subject = Tamarillo::Storage::JSON.new(params)
-      #   subject << Tamarillo::Tomato.new(Time.local(2012,01,01,6,0,0), 600)
-      #   subject.write
-      # end
+      before do
+        hash = { 'tomatoes' => [
+          { 'started_at' => Time.local(2012,1,1,6,0,0).iso8601,
+            'duration' => 600, 'interrupted' => false } ] }
+        File.open(storage_path, 'w') do |f|
+          f << ::JSON.generate(hash)
+        end
+      end
+
+      after do
+        File.delete(storage_path) if File.exist?(storage_path)
+      end
 
       it "loads tomatoes from JSON" do
         subject.should have(1).tomato
@@ -32,7 +41,7 @@ describe Tamarillo::Storage::JSON do
 
       it "restores tomatoes correctly" do
         tomato = subject.latest
-        tomato.started_at.should == Time.local(2012,01,01,6,0,0)
+        tomato.started_at.should == Time.local(2012,1,1,6,0,0)
         tomato.duration.should == (10 * 60)
       end
     end
