@@ -1,7 +1,7 @@
 require 'time'
 require 'fileutils'
 require 'forwardable'
-require 'json'
+require 'multi_json'
 require 'tamarillo/tomato'
 
 module Tamarillo
@@ -69,7 +69,7 @@ module Tamarillo
       # Internal: Loads tomatoes from JSON.
       def load_tomatoes
         json = File.read(@path)
-        data = ::JSON.parse(json)
+        data = ::MultiJson.load(json)
         tomatoes = data['tomatoes'].map { |h|
           h['started_at'] = Time.iso8601(h['started_at']).localtime
           Tomato.restore(h)
@@ -95,7 +95,7 @@ module Tamarillo
         FileUtils.mkdir_p(dir_path)
 
         File.open(@path, 'w') do |f|
-          f << ::JSON.generate(hash)
+          f << ::MultiJson.dump(hash)
         end
       end
 

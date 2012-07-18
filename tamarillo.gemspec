@@ -23,5 +23,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'timecop', '~> 0.3.5'
 
   gem.add_runtime_dependency 'gli', '~> 1.6.0'
+  gem.add_runtime_dependency 'multi_json', '~> 1.3.6'
 
 end
