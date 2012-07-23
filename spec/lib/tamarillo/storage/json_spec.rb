@@ -19,7 +19,7 @@ describe Tamarillo::Storage::JSON do
     subject { Tamarillo::Storage::JSON.new(params) }
 
     context "when storage file exists" do
-      let(:storage_path) { 'spec/support/sample_tomatoes.json' }
+      let(:storage_path) { 'tmp/sample_tomatoes.json' }
       let(:params) { { 'path' => storage_path } }
 
       before do
@@ -47,7 +47,7 @@ describe Tamarillo::Storage::JSON do
     end
 
     context "when storage file doesn't exist" do
-      let(:storage_path) { 'spec/support/invalid_path' }
+      let(:storage_path) { 'tmp/invalid_path' }
       let(:params) { { 'path' => storage_path} }
 
       before do
@@ -65,8 +65,38 @@ describe Tamarillo::Storage::JSON do
   end
 
   describe "#write" do
-    it "writes a JSON file"
-    it "writes tomatoes to JSON"
+    let(:storage_path) { 'tmp/invalid_path' }
+    let(:params) { { 'path' => storage_path} }
+
+    before do
+      subject << tomato
+    end
+
+    after do
+      File.delete(storage_path) if File.exist?(storage_path)
+    end
+
+    it "writes a JSON file" do
+      File.delete(storage_path)
+
+      lambda {
+        subject.write
+      }.should change {
+        File.exist?(storage_path)
+      }
+    end
+
+    it "writes tomatoes to JSON" do
+      subject.write
+      json = MultiJson.load( File.read(storage_path) )
+      json['tomatoes'].should have(1).tomato
+    end
+
+    it "includes the version number" do
+      subject.write
+      json = MultiJson.load( File.read(storage_path) )
+      json['version'].should == Tamarillo::Storage::JSON::VERSION
+    end
   end
 
   describe "#shovel" do

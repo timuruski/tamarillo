@@ -9,6 +9,7 @@ module Tamarillo
     class JSON
       extend Forwardable
 
+      VERSION = '1.0'
       DEFAULT_PATH = "#{ENV['HOME']}/.tamarillo/tomatoes.json"
 
       # Public: Initializes a new JSON storage.
@@ -52,7 +53,10 @@ module Tamarillo
           h
         }
 
-        hash = { 'tomatoes' => tomatoes }
+        hash = {
+          'version' => VERSION,
+          'tomatoes' => tomatoes
+        }
 
         write_json(hash)
       end
