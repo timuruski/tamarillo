@@ -17,7 +17,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
 
   gem.add_development_dependency 'aruba', '~> 0.4.11'
-  gem.add_development_dependency 'activesupport', '~> 3.0.0'
+  gem.add_development_dependency 'activesupport', '~> 2.3.18'
   gem.add_development_dependency 'fakefs', '~> 0.4.0'
   gem.add_development_dependency 'rspec', '~> 2.9.0'
   gem.add_development_dependency 'timecop', '~> 0.3.5'
