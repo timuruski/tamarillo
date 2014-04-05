@@ -1,4 +1,3 @@
-require 'active_support/core_ext/numeric/time'
 require 'tamarillo/config'
 
 describe Tamarillo::Config do

@@ -1,6 +1,6 @@
 require 'tamarillo/storage/file_system'
 require 'fakefs/spec_helpers'
-require 'active_support/core_ext/numeric/time'
+require 'support/time_helpers'
 
 include Tamarillo::Storage
 
@@ -15,10 +15,11 @@ include Tamarillo::Storage
 
 describe FileSystem do
   include FakeFS::SpecHelpers
+  include TimeHelpers
 
   let(:time) { Time.local(2011,1,1,6,0,0) }
   let(:date) { Date.new(2011,1,1) }
-  let(:config) { stub(:attributes => { 'duration' => 10.minutes }) }
+  let(:config) { stub(:attributes => { 'duration' => minutes(10) }) }
   let(:storage_path) { Pathname.new( File.expand_path('tmp/tamarillo')) }
   let(:tomato_path) { storage_path.join('2011/0101/20110101060000') }
   let(:sample_tomato) { <<EOS }
@@ -122,16 +123,16 @@ EOS
 
     context "when there are many tomatoes" do
       before do
-        create_tomato_file(Date.today.to_time + 6.hours)
-        create_tomato_file(Date.today.to_time + 6.hours + 15.minutes)
+        create_tomato_file(Date.today.to_time + hours(6))
+        create_tomato_file(Date.today.to_time + hours(6) + minutes(15))
       end
 
-      its(:started_at) { should == Date.today.to_time + 6.hours + 15.minutes }
+      its(:started_at) { should == Date.today.to_time + hours(6) + minutes(15) }
     end
 
     context "when there are no tomatoes for the day" do
       before do
-        create_tomato_file(Date.today.to_time - 1.days)
+        create_tomato_file(Date.today.to_time - days(1))
       end
 
       it { should be_nil }

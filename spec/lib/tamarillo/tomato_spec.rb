@@ -1,24 +1,26 @@
-require 'active_support/core_ext/numeric/time'
 require 'tamarillo/tomato'
+require 'support/time_helpers'
 
 include Tamarillo
 
 describe Tomato do
+  include TimeHelpers
+
   let(:now) { Time.new(2012,1,1,6,0,0) }
   let(:clock) { stub(now: now) }
-  subject { Tomato.new(now, 25.minutes, clock) }
+  subject { Tomato.new(now, minutes(25), clock) }
 
   describe "basic attibutes" do
-    let(:clock) { stub(now: now + 5.minutes) }
+    let(:clock) { stub(now: now + minutes(5)) }
 
-    its(:duration) { should == 25.minutes }
+    its(:duration) { should == minutes(25) }
     its(:started_at) { should == now }
     its(:date) { should == Date.new(2012,1,1) }
-    its(:elapsed) { should == 5.minutes }
+    its(:elapsed) { should == minutes(5) }
 
     it "update the duration" do
-      subject.duration = 5.minutes
-      subject.duration.should == 5.minutes
+      subject.duration = minutes(5)
+      subject.duration.should == minutes(5)
     end
   end
 
@@ -27,8 +29,8 @@ describe Tomato do
       time_a = Time.new(2012,1,1,6,0,0)
       time_b = Time.new(2012,1,1,6,0,0)
 
-      tomato_a = Tomato.new(time_a, 25.minutes)
-      tomato_b = Tomato.new(time_b, 25.minutes)
+      tomato_a = Tomato.new(time_a, minutes(25))
+      tomato_b = Tomato.new(time_b, minutes(25))
 
       tomato_a.should eql(tomato_b)
     end
@@ -37,8 +39,8 @@ describe Tomato do
       time_a = Time.new(2012,1,1,6,0,0)
       time_b = Time.new(2012,1,1,6,0,0)
 
-      tomato_a = Tomato.new(time_a, 15.minutes)
-      tomato_b = Tomato.new(time_b, 25.minutes)
+      tomato_a = Tomato.new(time_a, minutes(15))
+      tomato_b = Tomato.new(time_b, minutes(25))
 
       tomato_a.should_not eql(tomato_b)
     end
@@ -48,9 +50,9 @@ describe Tomato do
       time_b = Time.new(2012,1,1,7,0,0)
       time_c = Time.new(2012,1,1,8,0,0)
 
-      tomato_a = Tomato.new(time_a, 10.minutes)
-      tomato_b = Tomato.new(time_b, 10.minutes)
-      tomato_c = Tomato.new(time_c, 10.minutes)
+      tomato_a = Tomato.new(time_a, minutes(10))
+      tomato_b = Tomato.new(time_b, minutes(10))
+      tomato_c = Tomato.new(time_c, minutes(10))
 
       tomato_a.should < tomato_b
       tomato_c.should > tomato_b
@@ -63,21 +65,21 @@ describe Tomato do
 
     context "when no time has elapsed" do
       let(:elapsed) { 0 }
-      its(:remaining) { should == 25.minutes }
+      its(:remaining) { should == minutes(25) }
     end
 
     context "if some time has elapsed" do
-      let(:elapsed) { 10.minutes }
-      its(:remaining) { should == 15.minutes }
+      let(:elapsed) { minutes(10) }
+      its(:remaining) { should == minutes(15) }
     end
 
     context "when all time has elapsed" do
-      let(:elapsed) { 25.minutes }
+      let(:elapsed) { minutes(25) }
       its(:remaining) { should == 0 }
     end
 
     context "when excessive time has elapsed" do
-      let(:elapsed) { 30.minutes }
+      let(:elapsed) { minutes(30) }
       its(:remaining) { should == 0 }
     end
 
@@ -86,22 +88,22 @@ describe Tomato do
         subject.interrupt!
       end
 
-      its(:remaining) { should == 25.minutes }
+      its(:remaining) { should == minutes(25) }
     end
 
   end
 
   describe "approximate time remaining" do
     let(:clock) { stub(now: now + elapsed) }
-    subject { Tomato.new(now, 10.minutes, clock) }
+    subject { Tomato.new(now, minutes(10), clock) }
 
     context "when more than 30 seconds between minutes" do
-      let(:elapsed) { 5.minutes + 10.seconds }
+      let(:elapsed) { minutes(5) + seconds(10) }
       its(:approx_minutes_remaining) { should == 5 }
     end
 
     context "when less than 30 seconds between minutes" do
-      let(:elapsed) { 5.minutes + 50.seconds }
+      let(:elapsed) { minutes(5) + seconds(50) }
       its(:approx_minutes_remaining) { should == 4 }
     end
   end
@@ -118,14 +120,14 @@ describe Tomato do
     end
 
     context "when time remains" do
-      let(:elapsed) { 15.minutes }
+      let(:elapsed) { minutes(15) }
       it { should be_active }
       it { should_not be_completed }
       it { should_not be_interrupted }
     end
 
     context "when time has elapsed" do
-      let(:elapsed) { 25.minutes }
+      let(:elapsed) { minutes(25) }
       it { should_not be_active }
       it { should be_completed }
       it { should_not be_interrupted }
@@ -143,17 +145,17 @@ describe Tomato do
   end
 
   describe "#dump" do
-    specify { subject.dump['duration'].should == 25.minutes }
+    specify { subject.dump['duration'].should == minutes(25) }
     specify { subject.dump['started_at'].should == now }
     specify { subject.dump['interrupted'].should == false }
   end
 
   describe ".restore" do
     context "with good attributes" do
-      let(:attrs) { { 'duration' => 25.minutes, 'started_at' => now, 'interrupted' => true } }
+      let(:attrs) { { 'duration' => minutes(25), 'started_at' => now, 'interrupted' => true } }
       subject { Tomato.restore(attrs, clock) }
 
-      its(:duration) { should == 25.minutes }
+      its(:duration) { should == minutes(25) }
       its(:started_at) { should == now }
       its(:state) { should == Tomato::States::INTERRUPTED }
     end
